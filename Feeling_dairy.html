@@ -1,0 +1,292 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <link href="Feeling_dairy.css" rel="stylesheet" />
+    <title>Feeling_dairy</title>
+    <script src="Feeling_dairy.js" defer></script>
+</head>
+
+<body>
+    <!-- 封面 Cover -->
+    <section id="cover" class="cover">
+        <div class="title-block">
+            <h1 class="feeling-title">Feeling</h1>
+            <div class="subtitle">你的情緒日記</div>
+        </div>
+        <button class="arrow-btn" id="arrow-btn">▼
+        </button>
+    </section>
+    <!-- 主選單 Main Menu Cover 預設隱藏-->
+    <section id="main-menu" class="main-menu">
+        <div class="main-content">
+            <div class="main-title-block">
+                <h1 class="feeling-title">Feeling</h1>
+                <div class="subtitle">你的情緒日記</div>
+            </div>
+
+            <div class="menu-block">
+                <img src="images/cat.png" alt="cat" class="cat-img" />
+                <div class="menu-btns">
+                    <button class="menu-btn" id="today_feeling-btn">今日心情</button>
+                    <button class="menu-btn" id="today_record-btn">今日記錄</button>
+                    <button class="menu-btn" id="tomorrow-btn">明日期望</button>
+                    <button class="menu-btn" id="emotion_dairy-btn">心情日記</button>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!-- 今日心情 -->
+    <section id="mood-select" class="mood-select">
+        <!-- 按鈕-->
+        <!-- <button class="leavn-btn" id="leavn-btn">◀️</span>-->
+        <!-- 未優化 e.g.動畫-->
+        <div class="mood-container">
+            <div class="mood-header">今日心情</div>
+            <div class="mood-list">
+                <div class="mood-item" data-mood="開心">
+                    <img src="images/happy.gif" alt="開心" />
+                    <div class="mood-label">開心</div>
+                </div>
+                <div class="mood-item" data-mood="興奮">
+                    <img src="images/excited.gif" alt="興奮" />
+                    <div class="mood-label">興奮</div>
+                </div>
+                <div class="mood-item" data-mood="幸福">
+                    <img src="images/blessed.gif" alt="幸福" />
+                    <div class="mood-label">幸福</div>
+                </div>
+                <div class="mood-item" data-mood="傷心">
+                    <img src="images/sad.gif" alt="傷心" />
+                    <div class="mood-label">傷心</div>
+                </div>
+                <div class="mood-item" data-mood="焦慮">
+                    <img src="images/anxious.gif" alt="焦慮" />
+                    <div class="mood-label">焦慮</div>
+                </div>
+                <div class="mood-item" data-mood="生氣">
+                    <img src="images/angry.gif" alt="生氣" />
+                    <div class="mood-label">生氣</div>
+                </div>
+            </div>
+            <button id="submit-mood-btn" disabled>完成</button>
+            <div class="logo-block">
+                <span class="subtitle">你的情緒日記</span>
+                <span class="feeling-title">Feeling</span>
+            </div>
+        </div>
+    </section>
+    <!-- 今天記錄 -->
+    <section id="today-record" class="today-record" style="display:none">
+        <!--左邊的資料區-->
+        <div class="record-container">
+            <div class="record-title">今日記錄</div>
+            <div class="record-content-row">
+                <div class="record-left">
+                    <div class="record-title-block">
+                    </div>
+                    <!--日期-->
+                    <div class="record-info">
+                        <div class="record-label">日期</div>
+                        <div class="record-date" id="record-date">XX-XX-XXXX</div><!--需要跟當天日期一樣-->
+                    </div>
+                    <!--天氣區-->
+                    <div class="record-info">
+                        <div class="record-label">天氣</div>
+                        <div class="weather-options">
+                            <button class="weather-btn" data-weather="sunny">晴</button>
+                            <button class="weather-btn" data-weather="cloudy">陰</button>
+                            <button class="weather-btn" data-weather="rainy">雨</button>
+                        </div>
+                    </div>
+                    <!--心情區-->
+                    <div class="record-info">
+                        <div class="record-label">心情指數</div>
+                        <div class="mood-slider-block">
+                            <div class="cat-container">
+                                <img src="images/mood_cat.png" alt="cat" class="mood-cat-img" id="cat-img" />
+                            </div>
+                            <input type="range" min="0" max="10" value="0" class="mood-slider" id="mood-slider" />
+                        </div>
+                    </div>
+                </div>
+                <!-- 右側輸入區 -->
+                <div class="record-right">
+                    <textarea class="record-textarea" placeholder="寫寫你的感受……"></textarea>
+                </div>
+            </div>
+            <!-- 完成按鈕 -->
+            <button class="record-submit-btn">完成</button>
+        </div>
+        <!-- logo區塊 -->
+        <div class="logo-block">
+            <span class="subtitle">你的情緒日記</span>
+            <span class="feeling-title">Feeling</span>
+        </div>
+    </section>
+    <!-- 明天期望 -->
+    <section id="tomorrow-block" class="tomorrow-block">
+        <div class="tomorrow-container">
+            <div class="tomorrow-title"> 明日期望</div>
+            <div class="choose-cards">請選擇喜歡的卡片</div>
+            <!-- 卡片 -->
+            <div class="card-list">
+                <div class="card-item" data-card="1">
+                    <textarea class="card-textarea-brown" data-card="brown-card " placeholder="寫下你的期望..."
+                        style="display:none"></textarea>
+                </div>
+                <div class="card-item" data-card="2">
+                    <textarea class="card-textarea-black" data-card="black-card" placeholder="寫下你的期望..."
+                        style="display:none"></textarea>
+                </div>
+                <div class="card-item" data-card="3">
+                    <textarea class="card-textarea-white" data-card="white-card " placeholder="寫下你的期望..."
+                        style="display:none"></textarea>
+                </div>
+            </div>
+            <div class="sticker-container">
+                <!-- 文字 -->
+                <div class="choose-stickers">可以選擇喜歡的貼紙元素添加</div>
+                <!-- 貼紙 -->
+                <div class="sticker-area" id="sticker-area">
+                    <img src="images/sticker_1.png" class="sticker" style="--i:1;" data-sticker="shining">
+                    <img src="images/sticker_2.png" class="sticker" style="--i:2;" data-sticker="heart">
+                    <img src="images/sticker_3.png" class="sticker" style="--i:3;" data-sticker="stars_3">
+                    <img src="images/sticker_4.png" class="sticker" style="--i:4;" data-sticker="flowers">
+                    <img src="images/sticker_5.png" class="sticker" style="--i:5;" data-sticker="stars_2">
+                    <img src="images/sticker_6.png" class="sticker" style="--i:6;" data-sticker="butterfly">
+                </div>
+                <!-- 完成按鈕 -->
+                <button class="sticker-btn" id="sticker-btn">完成</button>
+            </div>
+        </div>
+        <!-- logo-block -->
+        <div class="logo-block">
+            <span class="subtitle">你的情緒日記</span>
+            <span class="feeling-title">Feeling</span>
+        </div>
+    </section>
+    <!-- 心情日記 -->
+    <section id="mood-of-date" class="mood-of-date">
+        <div class="date-container">
+        <div class="dairy-header">
+            <div class="diary-title">心情日記</div>
+            </div>
+            <div class="dairy-subtitle" id="dairy-subtitle">-年份-</div>
+        <div class="year-selector" id="year-selector">
+            <button class="year-arrow" id="year-prev">&lt;</button> <!--上年-->
+            <div class="year-list" id="year-list"></div>
+            <button class="year-arrow" id="year-next">&gt;</button> <!--下年-->
+        </div>
+        <div class="month-selector" id="month-selector" style="display:none;">
+            <div class="month-list" id="month-list"></div>
+        </div>
+        <div class="date-selector" id="date-selector" style="display:none;">
+            <div class="date-list" id="date-list"></div>
+        </div>
+        <div id="record-detail" style="display:none"></div>
+        </div>
+        <div class="logo-block">
+            <span class="feeling-title">Feeling</span>
+            <span class="subtitle">你的情緒日記</span>
+        </div>
+    </section>
+    <section id="mood-select2" class="mood-select2">
+        <!-- 按鈕-->
+        <!-- <button class="leavn-btn" id="leavn-btn">◀️</span>-->
+        <!-- 未優化 e.g.動畫-->
+        <div class="mood-container">
+            <div class="mood-header">今日心情</div>
+            <div class="mood-list">
+                <div class="mood-item" data-mood="開心">
+                    <img src="images/happy.gif" alt="開心" />
+                    <div class="mood-label">開心</div>
+                </div>
+                <div class="mood-item" data-mood="興奮">
+                    <img src="images/excited.gif" alt="興奮" />
+                    <div class="mood-label">興奮</div>
+                </div>
+                <div class="mood-item" data-mood="幸福">
+                    <img src="images/blessed.gif" alt="幸福" />
+                    <div class="mood-label">幸福</div>
+                </div>
+                <div class="mood-item" data-mood="傷心">
+                    <img src="images/sad.gif" alt="傷心" />
+                    <div class="mood-label">傷心</div>
+                </div>
+                <div class="mood-item" data-mood="焦慮">
+                    <img src="images/anxious.gif" alt="焦慮" />
+                    <div class="mood-label">焦慮</div>
+                </div>
+                <div class="mood-item" data-mood="生氣">
+                    <img src="images/angry.gif" alt="生氣" />
+                    <div class="mood-label">生氣</div>
+                </div>
+            </div>
+            <button id="edit-mood-btn" disabled>修改</button>
+            <button class="arrow-btn" id="next-mood-btn">▼</button>
+            <button id="enter-mood-btn" disabled>確認</button>
+            <div class="logo-block">
+                <span class="subtitle">你的情緒日記</span>
+                <span class="feeling-title">Feeling</span>
+            </div>
+        </div>
+    </section>
+        <section id="today-record2" class="today-record" style="display:none">
+        <!--左邊的資料區-->
+        <div class="record-container">
+            <div class="record-title">今日記錄</div>
+            <div class="record-content-row">
+                <div class="record-left">
+                    <div class="record-title-block">
+                    </div>
+                    <!--日期-->
+                    <div class="record-info">
+                        <div class="record-label">日期</div>
+                        <div class="record-date" id="record-date">XX-XX-XXXX</div><!--需要跟當天日期一樣-->
+                    </div>
+                    <!--天氣區-->
+                    <div class="record-info">
+                        <div class="record-label">天氣</div>
+                        <div class="weather-options">
+                            <button class="weather-btn" data-weather="sunny">晴</button>
+                            <button class="weather-btn" data-weather="cloudy">陰</button>
+                            <button class="weather-btn" data-weather="rainy">雨</button>
+                        </div>
+                    </div>
+                    <!--心情區-->
+                    <div class="record-info">
+                        <div class="record-label">心情指數</div>
+                        <div class="mood-slider-block">
+                            <div class="cat-container">
+                                <img src="images/mood_cat.png" alt="cat" class="mood-cat-img" id="cat-img" />
+                            </div>
+                            <input type="range" min="0" max="10" value="0" class="mood-slider" id="mood-slider" />
+                        </div>
+                    </div>
+                </div>
+                <!-- 右側輸入區 -->
+                <div class="record-right">
+                    <textarea class="record-textarea" placeholder="寫寫你的感受……"></textarea>
+                </div>
+            </div>
+            <!-- 修改按鈕 -->
+            <button id="edit-mood-btn" disabled>修改</button>
+            <!-- 下一頁按鈕 -->
+            <button class="arrow-btn" id="next-mood-btn2">▼</button>
+            <!-- 確認按鈕 -->
+            <button id="enter-mood-btn" disabled>確認</button>
+
+        </div>
+        <!-- logo區塊 -->
+        <div class="logo-block">
+            <span class="subtitle">你的情緒日記</span>
+            <span class="feeling-title">Feeling</span>
+        </div>
+    </section>
+
+</body>
+</html>
