@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能測試</title>
+</head>
+<body>
+    <h1>情緒日記功能測試</h1>
+    
+    <h2>已完成的功能：</h2>
+    <ul>
+        <li>✅ 返回按鈕已添加到所有頁面（除了首頁和選擇頁面）</li>
+        <li>✅ next-mood-btn2 點擊後跳轉到 tomorrow-block2</li>
+        <li>✅ tomorrow-block2 返回按鈕返回到 today-record2</li>
+        <li>✅ 修正了重複的 ID 問題</li>
+        <li>✅ 添加了完整的 tomorrow-block2 功能</li>
+    </ul>
+    
+    <h2>測試說明：</h2>
+    <ol>
+        <li>確保 MongoDB 服務正在運行</li>
+        <li>啟動服務器：<code>node app.js</code></li>
+        <li>瀏覽器訪問：<code>http://localhost:3000/Feeling_dairy.html</code></li>
+        <li>測試導航流程：
+            <ul>
+                <li>心情日記 → 選擇日期 → mood-select2 → today-record2 → tomorrow-block2</li>
+                <li>使用返回按鈕測試每個頁面的返回功能</li>
+            </ul>
+        </li>
+    </ol>
+    
+    <h2>按鈕功能對應：</h2>
+    <table border="1" style="border-collapse: collapse;">
+        <tr>
+            <th>頁面</th>
+            <th>按鈕</th>
+            <th>跳轉到</th>
+        </tr>
+        <tr>
+            <td>mood-select</td>
+            <td>返回</td>
+            <td>main-menu</td>
+        </tr>
+        <tr>
+            <td>today-record</td>
+            <td>返回</td>
+            <td>main-menu</td>
+        </tr>
+        <tr>
+            <td>tomorrow-block</td>
+            <td>返回</td>
+            <td>main-menu</td>
+        </tr>
+        <tr>
+            <td>mood-of-date</td>
+            <td>返回</td>
+            <td>main-menu</td>
+        </tr>
+        <tr>
+            <td>mood-select2</td>
+            <td>返回</td>
+            <td>mood-of-date</td>
+        </tr>
+        <tr>
+            <td>today-record2</td>
+            <td>返回</td>
+            <td>mood-select2</td>
+        </tr>
+        <tr>
+            <td>today-record2</td>
+            <td>next-mood-btn2</td>
+            <td>tomorrow-block2</td>
+        </tr>
+        <tr>
+            <td>tomorrow-block2</td>
+            <td>返回</td>
+            <td>today-record2</td>
+        </tr>
+    </table>
+    
+    <p><a href="http://localhost:3000/Feeling_dairy.html">開始測試 →</a></p>
+</body>
+</html>

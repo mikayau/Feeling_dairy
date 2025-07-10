@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());/*讓前端能跨域存取*/
 app.use(express.json()); /*解析json格式的請求體*/
 app.use(bodyParser.json()); 
+app.use(express.static('.')); /*提供靜態文件服務*/ 
 
 //連接到MongoDB數據庫
 mongoose.connect('mongodb://localhost:27017/feeling')/*連接到MongoDB數據庫feeling*/
@@ -30,9 +31,32 @@ app.post('/api/submit-mood', async (req, res) => {
     if (!user || !mood || !date) { /*檢查用戶名、心情和日期是否存在*/
         return res.status(400).json({ error: '用戶名和心情是必需的' }); /*如果缺少用戶名或心情，返回400錯誤*/
     }
-    const newMood = new Mood({ user, mood, date }); /*創建新的Mood實例*/
-    await newMood.save(); /*保存到數據庫*/
-    res.status(201).json({ message: '心情已提交' }); /*返回成功消息*/
+    
+    try {
+        // 使用 updateOne 與 upsert 選項來更新或創建 Mood 記錄
+        const result = await Mood.updateOne(
+            { user, date }, // 查找條件：相同用戶和日期
+            { $set: { mood, time: new Date() } }, // 更新內容
+            { upsert: true } // 如果不存在則創建新記錄
+        );
+        
+        // 同時也要更新 Record 模型中的 mood 字段（如果存在的話）
+        await Record.updateOne(
+            { date }, // 查找條件：相同日期
+            { $set: { mood } }, // 更新心情字段
+            { upsert: false } // 不創建新記錄，只更新現有記錄
+        );
+        
+        // 檢查是否是更新現有記錄還是創建新記錄
+        if (result.upsertedCount > 0) {
+            res.status(201).json({ message: '心情已提交', isNew: true });
+        } else {
+            res.status(200).json({ message: '心情已更新', isNew: false });
+        }
+    } catch (error) {
+        console.error('儲存心情失敗:', error);
+        res.status(500).json({ error: '儲存心情時發生錯誤' });
+    }
     // Mood.create({ user: 'test', mood: '開心', date: '01-07-2025' });
 });
 
@@ -61,8 +85,24 @@ const Record = mongoose.models.Record || mongoose.model('Record', recordSchema);
 // 今日記錄
 app.post('/api/saveRecord', async (req, res) => {
     try {
-        const record = new Record(req.body);
-        await record.save();
+        const { date, weather, mood, content, user } = req.body;
+        
+        // 更新或創建 Record
+        await Record.updateOne(
+            { date },
+            { $set: { date, weather, mood, content } },
+            { upsert: true }
+        );
+        
+        // 如果有 mood 和 user，也要更新 Mood 模型
+        if (mood && user) {
+            await Mood.updateOne(
+                { date, user },
+                { $set: { date, user, mood, time: new Date() } },
+                { upsert: true }
+            );
+        }
+        
         res.json({ success: true });
     } catch (err) {
         console.error('儲存失敗:', err);
@@ -91,6 +131,20 @@ app.post('/api/Tomorrow', async (req, res) => {
   }
 });
 
+// 獲取明天期望
+app.get('/api/getTomorrow', async (req, res) => {
+  const { date } = req.query;
+  if (!date) return res.json({});
+  
+  try {
+    const tomorrow = await Tomorrow.findOne({ date });
+    res.json(tomorrow || {});
+  } catch (err) {
+    console.error('getTomorrow error:', err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // 查詢某年某月的心情紀錄
 app.get('/api/month-moods', async (req, res) => {
   const { year, month } = req.query;
@@ -112,36 +166,33 @@ app.get('/api/month-moods', async (req, res) => {
   }
 });
 
-// 查詢某年某月的今日記錄
-function showRecordModal(record, dateStr) {
-  const box = document.getElementById('record-detail');
-  if (!record || !record.content) {
-    box.innerHTML = `<h3>${dateStr}</h3><p>查無記錄</p>`;
-  } else {
-    box.innerHTML = `
-      <h3>${dateStr}</h3>
-      <p>天氣：${record.weather}</p>
-      <p>心情指數：${record.mood}</p>
-      <p>內容：${record.content}</p>
-    `;
-  }
-  box.style.display = 'block';
-}
-
 app.get('/api/getRecord', async (req, res) => {
-  const { date } = req.query;
+  const { date, user } = req.query;
   if (!date) return res.json({});
-  const record = await Record.findOne({ date });
-  res.json(record || {});
-});
-
-// 範例 Express 路由
-app.post('/api/saveRecord', async (req, res) => {
-  const { date, weather, mood, content } = req.body;
-  await Record.updateOne(
-    { date },
-    { $set: { weather, mood, content } },
-    { upsert: true }
-  );
-  res.json({ success: true });
+  
+  try {
+    // 同時獲取 Record 和 Mood 資料
+    const record = await Record.findOne({ date });
+    const mood = await Mood.findOne({ date, user });
+    
+    console.log('getRecord - date:', date, 'user:', user);
+    console.log('getRecord - record:', record);
+    console.log('getRecord - mood:', mood);
+    
+    // 合併資料
+    const result = {
+      date: date,
+      weather: record?.weather || '',
+      mood: mood?.mood || record?.mood || '', // 優先使用 Mood 模型中的心情
+      content: record?.content || '',
+      user: user
+    };
+    
+    console.log('getRecord - result:', result);
+    
+    res.json(result);
+  } catch (err) {
+    console.error('getRecord error:', err);
+    res.status(500).json({ error: err.message });
+  }
 });

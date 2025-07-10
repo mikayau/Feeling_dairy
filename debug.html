@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Console</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .log {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        input {
+            padding: 5px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Feeling Dairy Debug Console</h1>
+        
+        <div>
+            <h3>測試心情提交</h3>
+            <input type="text" id="mood-input" placeholder="輸入心情 (例如: 開心)" value="開心">
+            <input type="text" id="date-input" placeholder="日期 (DD-MM-YYYY)" value="">
+            <button onclick="submitMood()">提交心情</button>
+        </div>
+
+        <div>
+            <h3>測試記錄獲取</h3>
+            <input type="text" id="get-date-input" placeholder="日期 (DD-MM-YYYY)" value="">
+            <button onclick="getRecord()">獲取記錄</button>
+        </div>
+
+        <div>
+            <h3>調試日誌</h3>
+            <div id="log" class="log"></div>
+            <button onclick="clearLog()">清除日誌</button>
+        </div>
+    </div>
+
+    <script>
+        const USER_ID = "testUser";
+        
+        // 設定今天的日期
+        window.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const dateStr = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+            document.getElementById('date-input').value = dateStr;
+            document.getElementById('get-date-input').value = dateStr;
+        });
+        
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${time}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+        
+        async function submitMood() {
+            const mood = document.getElementById('mood-input').value;
+            const date = document.getElementById('date-input').value;
+            
+            if (!mood || !date) {
+                log('❌ 請輸入心情和日期');
+                return;
+            }
+            
+            log(`🚀 提交心情: ${mood}, 日期: ${date}`);
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/submit-mood', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user: USER_ID,
+                        mood: mood,
+                        date: date,
+                        time: new Date().toISOString()
+                    })
+                });
+                
+                const data = await response.json();
+                log(`✅ 提交成功: ${JSON.stringify(data)}`);
+            } catch (error) {
+                log(`❌ 提交失敗: ${error.message}`);
+            }
+        }
+        
+        async function getRecord() {
+            const date = document.getElementById('get-date-input').value;
+            
+            if (!date) {
+                log('❌ 請輸入日期');
+                return;
+            }
+            
+            log(`🔍 獲取記錄: 日期: ${date}`);
+            
+            try {
+                const response = await fetch(`http://localhost:3000/api/getRecord?date=${date}&user=${USER_ID}`);
+                const data = await response.json();
+                log(`📋 獲取結果: ${JSON.stringify(data, null, 2)}`);
+            } catch (error) {
+                log(`❌ 獲取失敗: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

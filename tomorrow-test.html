@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>明日期望測試</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        button { margin: 5px; padding: 10px; }
+        .result { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>明日期望功能測試</h1>
+    
+    <div class="test-section">
+        <h2>測試保存明日期望</h2>
+        <input type="text" id="testDate" placeholder="日期 (DD-MM-YYYY)" value="11-07-2025">
+        <select id="testCardType">
+            <option value="">選擇卡片類型</option>
+            <option value="1">卡片 1</option>
+            <option value="2">卡片 2</option>
+            <option value="3">卡片 3</option>
+        </select>
+        <input type="text" id="testText" placeholder="期望文字">
+        <input type="text" id="testSticker" placeholder="貼紙類型 (用逗號分隔)">
+        <button onclick="saveTomorrow()">保存明日期望</button>
+        <div id="saveResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>測試獲取明日期望</h2>
+        <input type="text" id="getDate" placeholder="日期 (DD-MM-YYYY)" value="11-07-2025">
+        <button onclick="getTomorrow()">獲取明日期望</button>
+        <div id="getResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>功能說明</h2>
+        <ul>
+            <li>✅ tomorrow-block2 現在會顯示已保存的明日期望數據</li>
+            <li>✅ 不再有卡片選擇動畫，直接顯示已選擇的卡片</li>
+            <li>✅ 文字輸入框會顯示已保存的內容（唯讀模式）</li>
+            <li>✅ 貼紙會顯示已選擇的狀態</li>
+            <li>✅ 修改按鈕可以進入編輯模式</li>
+            <li>✅ 確認按鈕可以返回到心情日記頁面</li>
+        </ul>
+    </div>
+
+    <script>
+        async function saveTomorrow() {
+            const date = document.getElementById('testDate').value;
+            const cardType = document.getElementById('testCardType').value;
+            const text = document.getElementById('testText').value;
+            const stickerType = document.getElementById('testSticker').value;
+            
+            try {
+                const response = await fetch('/api/Tomorrow', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        cardType,
+                        text,
+                        stickerType,
+                        date
+                    })
+                });
+                
+                const result = await response.json();
+                document.getElementById('saveResult').innerHTML = 
+                    `<strong>保存結果:</strong> ${JSON.stringify(result, null, 2)}`;
+            } catch (error) {
+                document.getElementById('saveResult').innerHTML = 
+                    `<strong>錯誤:</strong> ${error.message}`;
+            }
+        }
+        
+        async function getTomorrow() {
+            const date = document.getElementById('getDate').value;
+            
+            try {
+                const response = await fetch(`/api/getTomorrow?date=${date}`);
+                const result = await response.json();
+                document.getElementById('getResult').innerHTML = 
+                    `<strong>獲取結果:</strong> <pre>${JSON.stringify(result, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('getResult').innerHTML = 
+                    `<strong>錯誤:</strong> ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

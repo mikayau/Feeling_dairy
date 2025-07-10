@@ -1,5 +1,6 @@
 let currentRecord = null;
 let currentDateStr = null;
+const USER_ID = "testUser"; // 全域 user id // 之後可改成登入者id
 // 導覽平滑滾動
 document.querySelectorAll("nav a").forEach((link) => {
   link.addEventListener("click", (e) => {
@@ -81,7 +82,21 @@ document
     })
       .then((res) => res.json())
       .then((data) => {
-        alert("心情已經存儲");
+        // 檢查是否是今天的日期
+        const todayStr = `${String(today.getDate()).padStart(2, "0")}-${String(today.getMonth() + 1).padStart(2, "0")}-${today.getFullYear()}`;
+        
+        if (dateStr === todayStr) {
+          // 如果是今天，顯示更具體的消息
+          if (data.isNew) {
+            alert("今日心情已記錄！"); 
+          } else {
+            alert("今日心情已更新！");
+          }
+        } else {
+          // 如果不是今天，顯示一般消息
+          alert(data.message || "心情已更新！");
+        }
+        
         // 跳轉到 mood-select
         document
           .querySelectorAll(".mood-item")
@@ -173,7 +188,7 @@ document
     const content = document.querySelector(".record-textarea").value;
 
     //組成物件
-    const data = { date, weather, mood, content };
+    const data = { date, weather, mood, content, user: "testUser"  };
 
     //test
     if (!date || !weather || !mood || !content) {
@@ -345,7 +360,8 @@ document.getElementById('sticker-btn').addEventListener('click', function () {
     cardType: cardType,
     text: text,
     stickerType: stickerType, // 可能為 null
-    date: dateStr // 新增這行
+    date: dateStr,
+    user: "testUser", // 新增這行
   };
 
   // 送到後端
@@ -353,6 +369,7 @@ document.getElementById('sticker-btn').addEventListener('click', function () {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
+    
   })
     .then(res => res.json())
     .then(result => {
@@ -560,12 +577,12 @@ function showDateSelector(year, month) {
           div.onclick = () => {
             const dateStr = `${String(d).padStart(2, '0')}-${String(month).padStart(2, '0')}-${year}`;
             // 發送請求取得該天記錄
-            fetch(`http://localhost:3000/api/getRecord?date=${dateStr}`)
+            fetch(`http://localhost:3000/api/getRecord?date=${dateStr}&user=${USER_ID}`)
               .then(res => res.json())
               .then(record => {
                 // 顯示記錄內容
                 showMoodSelect(record, dateStr);
-              })
+              });
           };
           dateList.appendChild(div);
         }
@@ -652,85 +669,575 @@ function switchSelector(showId) {
 function showMoodSelect(record, dateStr) {
   currentRecord = record;
   currentDateStr = dateStr;
+
+   // 顯示 mood-select
+  const moodSelect2 = document.getElementById('mood-select2');
+  document.getElementById('mood-select2').classList.add('show');
+  moodSelect2.style.display = 'flex';
+
   // 隱藏其他主區塊
   document.getElementById('main-menu').style.display = 'none';
   document.getElementById('mood-of-date').style.display = 'none';
   document.getElementById('today-record2').style.display = 'none';
   document.getElementById('tomorrow-block').style.display = 'none';
 
-  // 顯示 mood-select
-  const moodSelect = document.getElementById('mood-select2');
-  document.getElementById('mood-select2').classList.add('show');
-  moodSelect.style.display = 'flex';
-
-    // 預設檢視模式
-  setMoodViewMode(false);
-
-  // 如果有資料，預選心情
-  const moodItems = moodSelect2.querySelectorAll('.mood-item');
-  if (record && record.mood) {
-    moodItems.forEach(item => {
-      item.classList.toggle('selected', item.dataset.mood === record.mood);
-    });
-    document.getElementById('next-mood-btn').disabled = false;
-  } else {
-    moodItems.forEach(item => item.classList.remove('selected'));
-    document.getElementById('next-mood-btn').disabled = true;
-  }
-
-  // 綁定「下一頁」按鈕
-  document.getElementById('next-mood-btn').onclick = () => {
-    const selectedMood = moodSelect2.querySelector('.mood-item.selected')?.dataset.mood || '';
-    currentRecord = currentRecord || {};
-    currentRecord.mood = selectedMood;
-    showTodayRecord(currentRecord, currentDateStr);
-  };
-
-  // 綁定「修改」按鈕
-  document.getElementById('edit-mood-btn').onclick = () => setMoodViewMode(true);
-
-  // 綁定「確認」按鈕
-  document.getElementById('enter-mood-btn').onclick = () => setMoodViewMode(false);
-}
-
-// 顯示今日記錄區塊
-// 這個函式會在點選日期時被呼叫
-function showTodayRecord(record, dateStr) {
-  currentRecord = record;
-  currentDateStr = dateStr;
-  // 隱藏其他主區塊
-  document.getElementById('mood-select2').style.display = 'none';
-  document.getElementById('tomorrow-block').style.display = 'none';
-
-  // 顯示 today-record
-  const todayRecord = document.getElementById('today-record2');
-  document.getElementById('today-record2').classList.add('show');
-  todayRecord.style.display = 'flex';
-
-  // 填入資料
-  document.getElementById('record-date').textContent = dateStr;
-  document.getElementById('mood-slider').value = record.mood || 0;
-  document.querySelector('.record-textarea').value = record.content || '';
-  // 天氣
-  document.querySelectorAll('.weather-btn').forEach(btn => {
-    btn.classList.toggle('selected', btn.textContent.trim() === (record.weather || ''));
+  // 先全部移除 selected
+  moodSelect2.querySelectorAll('.mood-item').forEach(item => {
+    item.classList.remove('selected');
+    item.style.pointerEvents = 'none'; // 禁止點選
+    item.style.opacity = '0.5'; // 灰階顯示
   });
 
-  // 綁定「完成」按鈕
-  document.querySelector('.record-submit-btn').onclick = () => {
-    // 取得最新內容
-    record.weather = document.querySelector('.weather-btn.selected')?.textContent || '';
-    record.mood = document.getElementById('mood-slider').value;
-    record.content = document.querySelector('.record-textarea').value;
-    // 儲存到後端
-    fetch('http://localhost:3000/api/saveRecord', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...record, date: dateStr }),
-    }).then(() => {
-      showTomorrowBlock(record, dateStr);
+  // 自動鎖定當日心情
+  let moodToSelect = record && record.mood ? record.mood : null;
+  console.log('showMoodSelect - record:', record);
+  console.log('showMoodSelect - moodToSelect:', moodToSelect);
+  console.log('showMoodSelect - dateStr:', dateStr);
+  
+  if (moodToSelect) {
+    const selected = moodSelect2.querySelector(`.mood-item[data-mood="${moodToSelect}"]`);
+    console.log('showMoodSelect - selected element:', selected);
+    console.log('showMoodSelect - available mood items:', moodSelect2.querySelectorAll('.mood-item'));
+    
+    if (selected) {
+      selected.classList.add('selected');
+      selected.style.pointerEvents = 'auto';
+      selected.style.opacity = '1';
+      console.log('showMoodSelect - successfully selected mood:', moodToSelect);
+    } else {
+      console.log('showMoodSelect - no matching mood item found for:', moodToSelect);
+    }
+  } else {
+    console.log('showMoodSelect - no mood to select');
+  }
+
+  // 只有點擊「修改」按鈕才進入編輯模式
+  document.getElementById('edit-mood-btn').disabled = false;
+  document.getElementById('edit-mood-btn').onclick = () => {
+    // 進入編輯模式，全部 mood-item 可點選
+    moodSelect2.querySelectorAll('.mood-item').forEach(item => {
+      item.style.pointerEvents = 'auto';
+      item.style.opacity = '1';
     });
+    // 啟用確認按鈕
+    document.getElementById('enter-mood-btn').disabled = false;
+  };
+
+  // 點擊「確認」才送出修改
+  document.getElementById('enter-mood-btn').onclick = () => {
+    const selected = moodSelect2.querySelector('.mood-item.selected');
+    if (selected) {
+      record.mood = selected.dataset.mood;
+      // 送出到後端
+      fetch('http://localhost:3000/api/saveRecord', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...record, date: dateStr, user: USER_ID }),
+      }).then(() => {
+        // 回到檢視模式
+        showMoodSelect(record, dateStr);
+        document.getElementById('enter-mood-btn').disabled = true;
+      });
+    }
+  };
+
+  // 綁定點擊事件（只在 pointerEvents 為 auto 時才可切換）
+  moodSelect2.querySelectorAll('.mood-item').forEach(item => {
+    item.onclick = function() {
+      if (this.style.pointerEvents === 'auto') {
+        moodSelect2.querySelectorAll('.mood-item').forEach(i => i.classList.remove('selected'));
+        this.classList.add('selected');
+      }
+    };
+  });
+
+  // 為 next-mood-btn 添加點擊事件
+  document.getElementById('next-mood-btn').onclick = () => {
+    showTodayRecord2(currentRecord, currentDateStr);
+  };
+
+  // 為 next-mood-btn2 添加點擊事件
+  document.getElementById('next-mood-btn2').onclick = () => {
+    showTomorrowBlock2(currentRecord, currentDateStr);
   };
 }
 
+// 顯示 today-record2 頁面的函數
+function showTodayRecord2(record, dateStr) {
+  console.log('showTodayRecord2 - record:', record);
+  console.log('showTodayRecord2 - dateStr:', dateStr);
 
+  // 隱藏其他所有區塊
+  document.getElementById('main-menu').style.display = 'none';
+  document.getElementById('mood-select').style.display = 'none';
+  document.getElementById('mood-select2').style.display = 'none';
+  document.getElementById('today-record').style.display = 'none';
+  document.getElementById('tomorrow-block').style.display = 'none';
+  document.getElementById('mood-of-date').style.display = 'none';
+
+  // 顯示 today-record2 區塊
+  const todayRecord2 = document.getElementById('today-record2');
+  todayRecord2.style.display = 'flex';
+  setTimeout(() => todayRecord2.classList.add('show'), 10);
+
+  // 填入日期資料
+  const dateElem = todayRecord2.querySelector('.record-date');
+  if (dateElem) {
+    dateElem.textContent = dateStr;
+  }
+
+  // 填入天氣資料
+  const weatherBtns = todayRecord2.querySelectorAll('.weather-btn');
+  weatherBtns.forEach(btn => {
+    btn.classList.remove('selected');
+    if (record && record.weather && btn.textContent.trim() === record.weather) {
+      btn.classList.add('selected');
+    }
+  });
+
+  // 填入心情指數（滑桿）
+  const moodSlider = todayRecord2.querySelector('.mood-slider');
+  if (moodSlider && record && record.mood) {
+    // 如果 record.mood 是心情名稱，需要轉換為數字
+    if (typeof record.mood === 'string' && isNaN(record.mood)) {
+      // 心情名稱，使用預設值
+      moodSlider.value = 5;
+    } else {
+      moodSlider.value = record.mood || 5;
+    }
+  }
+
+  // 填入內容
+  const textarea = todayRecord2.querySelector('.record-textarea');
+  if (textarea) {
+    textarea.value = record && record.content ? record.content : '';
+  }
+
+  // 設定貓咪動畫
+  setupRecord2CatAnimation();
+
+  // 綁定天氣按鈕點擊事件
+  weatherBtns.forEach(btn => {
+    btn.onclick = function() {
+      weatherBtns.forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+    };
+  });
+
+  // 設定修改和確認按鈕功能
+  setupRecord2Buttons(record, dateStr);
+}
+
+// 設定 today-record2 的按鈕功能
+function setupRecord2Buttons(record, dateStr) {
+  const editBtn = document.getElementById('edit-record-btn2');
+  const confirmBtn = document.getElementById('enter-record-btn2');
+  const todayRecord2 = document.getElementById('today-record2');
+
+  // 初始狀態：只有修改按鈕可用
+  if (editBtn) editBtn.disabled = false;
+  if (confirmBtn) confirmBtn.disabled = true;
+
+  // 初始狀態：所有輸入元素都是只讀的
+  setRecord2Editable(false);
+
+  // 修改按鈕點擊事件
+  if (editBtn) {
+    editBtn.onclick = () => {
+      // 進入編輯模式
+      setRecord2Editable(true);
+      editBtn.disabled = true;
+      if (confirmBtn) confirmBtn.disabled = false;
+    };
+  }
+
+  // 確認按鈕點擊事件
+  if (confirmBtn) {
+    confirmBtn.onclick = () => {
+      // 收集資料
+      const date = todayRecord2.querySelector('.record-date').textContent;
+      const weather = todayRecord2.querySelector('.weather-btn.selected')?.textContent || '';
+      const mood = todayRecord2.querySelector('.mood-slider').value;
+      const content = todayRecord2.querySelector('.record-textarea').value;
+
+      // 組成資料物件
+      const data = { 
+        date, 
+        weather, 
+        mood, 
+        content, 
+        user: USER_ID 
+      };
+
+      console.log('saving record2 data:', data);
+
+      // 發送到後端
+      fetch('http://localhost:3000/api/saveRecord', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.success !== false) {
+          alert('記錄已更新！');
+          // 退出編輯模式
+          setRecord2Editable(false);
+          editBtn.disabled = false;
+          confirmBtn.disabled = true;
+          
+          // 更新 currentRecord
+          currentRecord = { ...currentRecord, ...data };
+        } else {
+          alert('儲存失敗，請稍後再試');
+        }
+      })
+      .catch(err => {
+        console.error('Save error:', err);
+        alert('儲存失敗，請檢查網路連線');
+      });
+    };
+  }
+}
+
+// 設定 today-record2 輸入元素的可編輯狀態
+function setRecord2Editable(editable) {
+  const todayRecord2 = document.getElementById('today-record2');
+  
+  // 天氣按鈕
+  const weatherBtns = todayRecord2.querySelectorAll('.weather-btn');
+  weatherBtns.forEach(btn => {
+    btn.style.pointerEvents = editable ? 'auto' : 'none';
+    btn.style.opacity = editable ? '1' : '0.7';
+  });
+
+  // 心情滑桿
+  const moodSlider = todayRecord2.querySelector('.mood-slider');
+  if (moodSlider) {
+    moodSlider.disabled = !editable;
+    moodSlider.style.opacity = editable ? '1' : '0.7';
+  }
+
+  // 文字區域
+  const textarea = todayRecord2.querySelector('.record-textarea');
+  if (textarea) {
+    textarea.readOnly = !editable;
+    textarea.style.opacity = editable ? '1' : '0.7';
+  }
+}
+
+// 為 mood-slider2 設定貓咪移動功能
+function setupRecord2CatAnimation() {
+  const slider = document.getElementById('mood-slider2');
+  const catContainer = document.querySelector('#today-record2 .cat-container');
+  const cat = document.getElementById('cat-img2');
+  
+  if (!slider || !catContainer || !cat) return;
+  
+  function updateCatAndBar2() {
+    const catWidth = 36;
+    const min = parseInt(slider.min);
+    const max = parseInt(slider.max);
+    const val = parseInt(slider.value);
+    const percent = (val - min) / (max - min);
+    
+    // 計算貓的位置（避免超出邊界）
+    const sliderWidth = slider.offsetWidth - catWidth;
+    const left = percent * sliderWidth;
+    catContainer.style.left = `${left}px`;
+    
+    // 改變滑桿已選區域顏色
+    slider.style.background = `linear-gradient(to right, #ffd6a0 0%,rgb(243, 104, 104) ${percent * 100}%, #fff ${percent * 100}%, #fff 100%)`;
+  }
+
+  slider.addEventListener('input', updateCatAndBar2);
+  window.addEventListener('resize', updateCatAndBar2);
+  updateCatAndBar2();
+}
+
+// 返回按鈕功能
+// 通用的頁面切換函數
+function showPage(pageId, addShowClass = true) {
+  // 隱藏所有頁面
+  const pages = ['cover', 'main-menu', 'mood-select', 'today-record', 'tomorrow-block', 'mood-of-date', 'mood-select2', 'today-record2', 'tomorrow-block2'];
+  pages.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.classList.remove('show');
+      element.style.display = 'none';
+    }
+  });
+  
+  // 顯示指定頁面
+  const targetPage = document.getElementById(pageId);
+  if (targetPage) {
+    targetPage.style.display = 'flex';
+    if (addShowClass) {
+      setTimeout(() => targetPage.classList.add('show'), 10);
+    }
+  }
+}
+
+// 返回按鈕事件處理器
+document.addEventListener('DOMContentLoaded', function() {
+  // mood-select 返回到 main-menu
+  document.getElementById('mood-select-back-btn')?.addEventListener('click', () => {
+    showPage('main-menu');
+  });
+
+  // today-record 返回到 main-menu
+  document.getElementById('today-record-back-btn')?.addEventListener('click', () => {
+    showPage('main-menu');
+  });
+
+  // tomorrow-block 返回到 main-menu
+  document.getElementById('tomorrow-block-back-btn')?.addEventListener('click', () => {
+    showPage('main-menu');
+  });
+
+  // mood-of-date 返回到 main-menu
+  document.getElementById('mood-of-date-back-btn')?.addEventListener('click', () => {
+    showPage('main-menu');
+  });
+
+  // mood-select2 返回到 mood-of-date
+  document.getElementById('mood-select2-back-btn')?.addEventListener('click', () => {
+    showPage('mood-of-date');
+    // 重新顯示日期選擇器
+    setTimeout(() => {
+      document.getElementById('date-selector').style.display = 'flex';
+      document.getElementById('dairy-subtitle').textContent = '-日期-';
+    }, 100);
+  });
+
+  // today-record2 返回到 mood-select2
+  document.getElementById('today-record2-back-btn')?.addEventListener('click', () => {
+    showPage('mood-select2');
+  });
+
+  // tomorrow-block2 返回到 today-record2
+  document.getElementById('tomorrow-block2-back-btn')?.addEventListener('click', () => {
+    showPage('today-record2');
+  });
+});
+
+// 顯示 tomorrow-block2 頁面的函數
+function showTomorrowBlock2(record, dateStr) {
+  console.log('showTomorrowBlock2 - record:', record);
+  console.log('showTomorrowBlock2 - dateStr:', dateStr);
+
+  // 使用 showPage 函數來顯示頁面
+  showPage('tomorrow-block2');
+
+  // 確保頁面元素有正確的 CSS 類別
+  const tomorrowBlock2 = document.getElementById('tomorrow-block2');
+  if (tomorrowBlock2) {
+    tomorrowBlock2.classList.add('tomorrow-block2');
+  }
+
+  // 獲取並顯示已保存的明天期望數據
+  loadTomorrowData(dateStr);
+}
+
+// 獲取並顯示已保存的明天期望數據
+async function loadTomorrowData(dateStr) {
+  try {
+    const response = await fetch(`/api/getTomorrow?date=${dateStr}`);
+    const tomorrowData = await response.json();
+    
+    console.log('loadTomorrowData - tomorrowData:', tomorrowData);
+    
+    // 顯示已保存的數據
+    displayTomorrowData(tomorrowData, dateStr);
+    
+  } catch (error) {
+    console.error('載入明天期望數據失敗:', error);
+    // 如果沒有數據，顯示空白狀態
+    displayTomorrowData({}, dateStr);
+  }
+}
+
+// 顯示明天期望數據
+function displayTomorrowData(tomorrowData, dateStr) {
+  const cardItems = document.querySelectorAll('#tomorrow-block2 .card-item');
+  const stickers = document.querySelectorAll('#tomorrow-block2 .sticker');
+  
+  // 首先確保所有卡片都是可見的
+  cardItems.forEach(item => {
+    item.style.display = 'block';
+    item.classList.remove('selected');
+    const textarea = item.querySelector('textarea');
+    if (textarea) {
+      textarea.style.display = 'none';
+      textarea.value = '';
+      textarea.disabled = true;
+    }
+  });
+  
+  stickers.forEach(sticker => {
+    sticker.classList.remove('selected');
+  });
+  
+  // 如果有保存的數據，顯示對應的卡片和內容
+  if (tomorrowData.cardType) {
+    const selectedCard = document.querySelector(`#tomorrow-block2 .card-item[data-card="${tomorrowData.cardType}"]`);
+    if (selectedCard) {
+      selectedCard.classList.add('selected');
+      const textarea = selectedCard.querySelector('textarea');
+      if (textarea) {
+        textarea.style.display = 'block';
+        textarea.value = tomorrowData.text || '';
+        textarea.disabled = true; // 設為唯讀模式
+      }
+    }
+  }
+  
+  // 如果有保存的貼紙，顯示對應的貼紙
+  if (tomorrowData.stickerType) {
+    const stickerTypes = tomorrowData.stickerType.split(',');
+    stickerTypes.forEach(stickerType => {
+      const sticker = document.querySelector(`#tomorrow-block2 .sticker[data-sticker="${stickerType}"]`);
+      if (sticker) {
+        sticker.classList.add('selected');
+      }
+    });
+  }
+  
+  // 設定修改和確認按鈕功能
+  setupTomorrowBlock2Buttons(tomorrowData, dateStr);
+}
+
+// 設定 tomorrow-block2 的修改和確認按鈕功能
+function setupTomorrowBlock2Buttons(tomorrowData, dateStr) {
+  const editBtn = document.querySelector('#tomorrow-block2 #edit-tomorrow-btn2');
+  const enterBtn = document.querySelector('#tomorrow-block2 #enter-tomorrow-btn2');
+
+  // 根據是否有數據來設定按鈕狀態
+  const hasData = tomorrowData && (tomorrowData.cardType || tomorrowData.stickerType);
+  
+  if (editBtn) {
+    editBtn.disabled = !hasData;
+    editBtn.style.display = hasData ? 'block' : 'none';
+  }
+  
+  if (enterBtn) {
+    enterBtn.disabled = !hasData;
+    enterBtn.style.display = hasData ? 'block' : 'none';
+  }
+
+  // 修改按鈕功能 - 進入編輯模式
+  if (editBtn) {
+    editBtn.onclick = () => {
+      // 啟用編輯模式
+      const textareas = document.querySelectorAll('#tomorrow-block2 textarea');
+      textareas.forEach(textarea => {
+        textarea.disabled = false;
+      });
+      
+      // 啟用卡片和貼紙選擇
+      const cardItems = document.querySelectorAll('#tomorrow-block2 .card-item');
+      const stickers = document.querySelectorAll('#tomorrow-block2 .sticker');
+      
+      cardItems.forEach(item => {
+        item.style.pointerEvents = 'auto';
+        item.onclick = function() {
+          // 移除其他卡片的選中狀態
+          cardItems.forEach(card => card.classList.remove('selected'));
+          
+          // 選中當前卡片
+          this.classList.add('selected');
+          
+          // 顯示對應的文字輸入框
+          const textarea = this.querySelector('textarea');
+          if (textarea) {
+            textarea.style.display = 'block';
+            textarea.focus();
+            textarea.disabled = false;
+          }
+        };
+      });
+      
+      stickers.forEach(sticker => {
+        sticker.style.pointerEvents = 'auto';
+        sticker.onclick = function() {
+          this.classList.toggle('selected');
+        };
+      });
+      
+      // 修改按鈕狀態
+      editBtn.textContent = '取消';
+      editBtn.onclick = () => {
+        // 重新載入原始數據
+        loadTomorrowData(dateStr);
+      };
+      
+      // 顯示儲存按鈕
+      if (enterBtn) {
+        enterBtn.textContent = '儲存';
+        enterBtn.disabled = false;
+        enterBtn.onclick = () => saveTomorrowData(dateStr);
+      }
+    };
+  }
+
+  // 確認按鈕功能
+  if (enterBtn) {
+    enterBtn.onclick = () => {
+      // 如果有數據，返回到心情日記頁面
+      if (hasData) {
+        showPage('mood-of-date');
+      }
+    };
+  }
+}
+
+// 儲存明天期望數據
+async function saveTomorrowData(dateStr) {
+  try {
+    // 收集用戶輸入的資料
+    const selectedCard = document.querySelector('#tomorrow-block2 .card-item.selected');
+    const selectedStickers = document.querySelectorAll('#tomorrow-block2 .sticker.selected');
+    
+    let cardType = '';
+    let text = '';
+    
+    if (selectedCard) {
+      cardType = selectedCard.getAttribute('data-card');
+      const textarea = selectedCard.querySelector('textarea');
+      if (textarea) {
+        text = textarea.value;
+      }
+    }
+    
+    const stickerTypes = Array.from(selectedStickers).map(sticker => 
+      sticker.getAttribute('data-sticker')
+    );
+
+    // 儲存明日期望資料
+    const response = await fetch('/api/Tomorrow', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cardType,
+        text,
+        stickerType: stickerTypes.join(','),
+        date: dateStr
+      })
+    });
+
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('明日期望已儲存！');
+      // 重新載入數據以顯示更新後的內容
+      loadTomorrowData(dateStr);
+    } else {
+      alert('儲存失敗：' + result.error);
+    }
+  } catch (error) {
+    console.error('儲存失敗:', error);
+    alert('儲存失敗，請稍後再試');
+  }
+}

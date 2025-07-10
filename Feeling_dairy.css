@@ -537,7 +537,8 @@ body {
   color: #64574c;
   font-size: 24px;
   font-family: CatWord, Arial, sans-serif;
-  border: none; /* 無邊框 */
+  border: none;
+  /* 無邊框 */
   cursor: pointer; /* 鼠標指針變為手形 */
   transition: background 0.2s, color 0.2s, transform 0.2s;
   display: block;
@@ -728,15 +729,24 @@ body {
 
 /* today-record 初始隱藏，動畫顯示 */
 .today-record {
-  display: flex; /* 使用 Flexbox */
-  flex-direction: column; /* 垂直排列 */
-  justify-content: center; /* 垂直置中 */
-  align-items: center; /* 水平置中 */
-  opacity: 0; /* 初始不透明度 */
-  pointer-events: none; /* 禁止互動 */
-  transition: opacity 0.7s, transform 0.7s; /* 過渡效果 */
-  transform: scale(0.95); /* 初始縮小 */
-  position: absolute; /* 相對定位 */
+  display: flex;
+  /* 使用 Flexbox */
+  flex-direction: column;
+  /* 垂直排列 */
+  justify-content: center;
+  /* 垂直置中 */
+  align-items: center;
+  /* 水平置中 */
+  opacity: 0;
+  /* 初始不透明度 */
+  pointer-events: none;
+  /* 禁止互動 */
+  transition: opacity 0.7s, transform 0.7s;
+  /* 過渡效果 */
+  transform: scale(0.95);
+  /* 初始縮小 */
+  position: absolute;
+  /* 相對定位 */
   top: 0;
   left: 0; /* 靠左上角 */
   width: 100vw; /* 寬度100% */
@@ -749,15 +759,24 @@ body {
   padding: 24px; /* 內邊距 */
 }
 .today-record2 {
-  display: flex; /* 使用 Flexbox */
-  flex-direction: column; /* 垂直排列 */
-  justify-content: center; /* 垂直置中 */
-  align-items: center; /* 水平置中 */
-  opacity: 0; /* 初始不透明度 */
-  pointer-events: none; /* 禁止互動 */
-  transition: opacity 0.7s, transform 0.7s; /* 過渡效果 */
-  transform: scale(0.95); /* 初始縮小 */
-  position: absolute; /* 相對定位 */
+  display: flex;
+  /* 使用 Flexbox */
+  flex-direction: column;
+  /* 垂直排列 */
+  justify-content: center;
+  /* 垂直置中 */
+  align-items: center;
+  /* 水平置中 */
+  opacity: 0;
+  /* 初始不透明度 */
+  pointer-events: none;
+  /* 禁止互動 */
+  transition: opacity 0.7s, transform 0.7s;
+  /* 過渡效果 */
+  transform: scale(0.95);
+  /* 初始縮小 */
+  position: absolute;
+  /* 相對定位 */
   top: 0;
   left: 0; /* 靠左上角 */
   width: 100vw; /* 寬度100% */
@@ -833,16 +852,26 @@ body {
 
 .date-container {
   position: relative; /*.logo-block 的絕對定位才會以 container 為基準*/
-  display: flex; /* 使用 Flexbox */
-  align-items: center; /* 垂直置中 */
-  justify-content: center; /* 水平置中 */
-  width: 80vw; /* 寬度80% */
-  max-width: 1000px; /* 最大寬度1000px */
-  height: 700px; /* 高度自動 */
-  margin: auto; /* 自動水平置中 */
-  box-sizing: border-box; /* 包含內邊距和邊框 */
-  gap: 0px; /* 左右間距 */
-  flex-direction: column; /* 垂直排列 */
+  display: flex;
+  /* 使用 Flexbox */
+  align-items: center;
+  /* 垂直置中 */
+  justify-content: center;
+  /* 水平置中 */
+  width: 80vw;
+  /* 寬度80% */
+  max-width: 1000px;
+  /* 最大寬度1000px */
+  height: 700px;
+  /* 高度自動 */
+  margin: auto;
+  /* 自動水平置中 */
+  box-sizing: border-box;
+  /* 包含內邊距和邊框 */
+  gap: 0px;
+  /* 左右間距 */
+  flex-direction: column;
+  /* 垂直排列 */
 }
 
 /* 左側資訊區 */
@@ -1073,8 +1102,8 @@ body {
   margin: 32px auto 0 auto; /* 上方間距 */
   background: none; /* 無背景 */
   position: static; /* 靜態定位 */
-  color: #64574c;
-  font-size: 28px;
+  color: #64574c; /* 咖啡色文字 */
+  font-size: 28px; /* 字體大小 */
   font-family: CatWord, Arial, sans-serif;
   border: none; /* 無邊框 */
   cursor: pointer; /* 鼠標指針變為手形 */
@@ -1127,6 +1156,55 @@ body {
   }
 }
 
+/* tomorrow-block2 響應式設計 */
+@media (max-width: 1400px) {
+  .tomorrow-block2 .card-item {
+    width: 500px !important;
+    height: 340px !important;
+  }
+  
+  .tomorrow-block2 .card-textarea-brown,
+  .tomorrow-block2 .card-textarea-black,
+  .tomorrow-block2 .card-textarea-white {
+    width: 420px !important;
+    height: 240px !important;
+  }
+  
+  .tomorrow-block2 .card-list {
+    gap: 30px;
+  }
+
+  .tomorrow-block2 .card-sticker {
+    width: 70px !important;
+    height: 70px !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  .tomorrow-block2 .card-item {
+    width: 450px !important;
+    height: 300px !important;
+  }
+  
+  .tomorrow-block2 .card-textarea-brown,
+  .tomorrow-block2 .card-textarea-black,
+  .tomorrow-block2 .card-textarea-white {
+    width: 370px !important;
+    height: 200px !important;
+  }
+  
+  .tomorrow-block2 .card-list {
+    gap: 20px;
+    flex-direction: column;
+  }
+
+  .tomorrow-block2 .card-sticker {
+    width: 60px !important;
+    height: 60px !important;
+    top: 20px;
+    right: 20px;
+  }
+}
 .tomorrow-block {
   width: 100vw;
   min-width: 800px; /* 最小寬度 */
@@ -1145,9 +1223,35 @@ body {
   transition: opacity 0.7s; /* 過渡效果 */
   pointer-events: none; /* 確保不會擋到按鈕 */
 }
+.tomorrow-block2 {
+  width: 100vw;
+  min-width: 1200px; /* 增加最小寬度以容納更大的卡片 */
+  height: 100vh;
+  background: #ffe5cf;
+  display: none; /* 初始隱藏 */
+  pointer-events: none; /* 禁止互動 */
+  flex-direction: column; /* 垂直排列 */
+  align-items: center; /* 水平置中 */
+  justify-content: flex-start; /* 垂直置頂 */
+  position: absolute; /* 相對定位 */
+  top: 0;
+  left: 0;
+  z-index: 3; /* 確保在封面上層 */
+  overflow-x: auto; /* 加入水平滾动支援 */
+  overflow-y: auto; /* 加入垂直滾動支援 */
+  opacity: 0; /* 初始不透明度 */
+  transition: opacity 0.7s; /* 過渡效果 */
+  pointer-events: none; /* 確保不會擋到按鈕 */
+}
 
 .tomorrow-block.show {
   display: flex; /* 顯示 tomorrow-block.show */
+  opacity: 1; /* 不透明度為1 */
+  transform: scale(1); /* 恢復原始大小 */
+  pointer-events: auto; /* 允許互動 */
+}
+.tomorrow-block2.show {
+  display: flex; /* 顯示 tomorrow-block2.show */
   opacity: 1; /* 不透明度為1 */
   transform: scale(1); /* 恢復原始大小 */
   pointer-events: auto; /* 允許互動 */
@@ -1364,6 +1468,39 @@ body {
   height: 60px;
   pointer-events: none;
   /* 你可以根據卡片設計調整位置 */
+}
+
+/* tomorrow-block2 中的貼紙樣式 */
+.tomorrow-block2 .card-sticker {
+  width: 80px !important;
+  height: 80px !important;
+  /* 調整貼紙在大卡片中的位置 */
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  z-index: 2;
+  /* 增加一些視覺效果 */
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
+}
+
+/* tomorrow-block2 中的 textarea 樣式調整 */
+.tomorrow-block2 .card-textarea-brown,
+.tomorrow-block2 .card-textarea-black,
+.tomorrow-block2 .card-textarea-white {
+  display: none;
+  /* 增大 textarea 以匹配更大的卡片 */
+  width: 520px !important;
+  height: 280px !important;
+  font-size: 16px !important;
+  padding: 20px !important;
+  border-radius: 16px !important;
+  margin: 20px auto !important;
+}
+
+.tomorrow-block2 .card-item.selected .card-textarea-brown,
+.tomorrow-block2 .card-item.selected .card-textarea-black,
+.tomorrow-block2 .card-item.selected .card-textarea-white {
+  display: block !important;
 }
 
 /* 卡片單跳動畫 */
@@ -1758,4 +1895,608 @@ body {
   min-width: 320px;
   font-size: 18px;
   color: #64574c;
+}
+
+/* 返回按鈕樣式 */
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #d4a574;
+  border-radius: 25px;
+  padding: 8px 16px;
+  font-family: CatWord, Arial, sans-serif;
+  font-size: 16px;
+  color: #8b5a3c;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn:hover {
+  background-color: #d4a574;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* tomorrow-block2 特定樣式 */
+.tomorrow-block2 .card-item {
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin: 15px;
+  /* 增大卡片尺寸 */
+  width: 600px !important;
+  height: 400px !important;
+  /* 增強視覺效果 */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-radius: 28px;
+}
+
+.tomorrow-block2 .card-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+  /* 響應式佈局 */
+  max-width: 1800px;
+  width: 100%;
+}
+
+.tomorrow-block2 .card-item.selected {
+  transform: scale(1.08) !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+  opacity: 1 !important;
+  /* 增加邊框突出選中效果 */
+  border: 4px solid #fff;
+}
+
+.tomorrow-block2 .card-item.selected textarea {
+  display: block !important;
+}
+
+/* tomorrow-block2 卡片背景顏色 */
+.tomorrow-block2 .card-item[data-card="1"] {
+  background: #d4a574 !important; /* 棕色卡片 */
+}
+
+.tomorrow-block2 .card-item[data-card="2"] {
+  background: #5a5a5a !important; /* 黑色卡片 */
+}
+
+.tomorrow-block2 .card-item[data-card="3"] {
+  background: #f5f5f5 !important; /* 白色卡片 */
+}
+
+/* tomorrow-block2 中的 textarea 樣式 */
+.tomorrow-block2 .card-textarea-brown,
+.tomorrow-block2 .card-textarea-black,
+.tomorrow-block2 .card-textarea-white {
+   display: none;
+  /* 增大 textarea 以匹配更大的卡片 */
+  width: 520px !important;
+  height: 280px !important;
+  font-size: 16px !important;
+  padding: 20px !important;
+  border-radius: 16px !important;
+  margin: 20px auto !important;
+}
+
+.tomorrow-block2 .card-item.selected .card-textarea-brown,
+.tomorrow-block2 .card-item.selected .card-textarea-black,
+.tomorrow-block2 .card-item.selected .card-textarea-white {
+  display: block !important;
+}
+
+/* 卡片單跳動畫 */
+@keyframes card-bounce {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  30% {
+    transform: scale(1.12) translateY(-30px);
+  }
+  60% {
+    transform: scale(0.98) translateY(0);
+  }
+  /* 100% { transform: scale(1) translateY(0); } */
+}
+.card-item.bounce {
+  animation: card-bounce 0.45s cubic-bezier(0.4, 2, 0.6, 1);
+  z-index: 20;
+}
+.choose-cards.fade-out {
+  opacity: 0;
+  pointer-events: none; /* 不對鼠標作出聲明 */
+  transition: opacity 0.5s;
+}
+.choose-stickers {
+  color: #64574c;
+  /* 咖啡色 你的情緒日記 */
+  font-size: 17px;
+  font-family: Fatface, CatWord, sans-serif;
+  /* 正常字重 */
+  margin-bottom: 42px;
+  /* 和 Feeling 間距 */
+  line-height: 0;
+  /* 行高 */
+  opacity: 0.6;
+}
+#sticker-btn {
+  background: #fff;
+  border: none;
+  border-radius: 40px;
+  font-size: 18px;
+  font-family: CatWord, Arial, sans-serif;
+  color: #64574c;
+  padding: 16px 44px; /* 按鈕內邊距 */
+  box-shadow: 0 2px 16px #0001;
+  margin: 50px auto 0px auto; /* 上下邊距 */
+  text-align: center; /* 文字中間 */
+  pointer-events: none;
+  cursor: default;
+  user-select: none;
+  display: block;
+  transition: background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+#sticker-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 1px 4px #0002;
+  background: #ffe5cf;
+}
+
+.choose-stickers,
+#sticker-btn {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s, transform 0.6s;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+}
+
+.choose-stickers.show,
+#sticker-btn.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  height: auto;
+  overflow: visible;
+}
+/*單獨透明*/
+.choose-stickers.show {
+ opacity: 0.6;
+}
+#sticker-btn.show {
+  cursor: pointer;
+}
+.sticker-container {
+  position: absolute;
+  top: 250px;
+  left: 0;
+  width: 360px;
+  height: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* 心情日記 */
+/* 年份選擇動畫 */
+.year-list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin: 40px 0 0 0;
+  transition: transform 0.5s cubic-bezier(.34,1.56,.64,1);
+  will-change: transform;
+}
+.year-item {
+  font-family: Fatface, Arial, sans-serif;
+  font-size: 48px;
+  color: #64574c;
+  background: #fff;
+  border-radius: 50%;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 
+    font-size 0.5s, width 0.5s, height 0.5s, opacity 0.5s, 
+    transform 0.5s, z-index 0.5s;
+  opacity: 0.3;
+  cursor: pointer;
+  box-shadow: 0 2px 16px #0001;
+  position: relative;
+  z-index: 1;
+}
+.year-item.current {
+  font-size: 64px;
+  width: 240px;
+  height: 240px;
+  opacity: 1;
+  z-index: 2;
+  background: #fff;
+  /* ...原本樣式... */
+  transition: transform 0.5s, opacity 0.5s;
+}
+
+.year-item.slide-out-left {
+  transform: translateX(-120%) scale(0.8);
+  opacity: 0;
+}
+.year-item.slide-out-right {
+  transform: translateX(120%) scale(0.8);
+  opacity: 0;
+}
+.year-item.slide-in-left {
+  transform: translateX(120%) scale(0.8);
+  opacity: 0;
+  position: absolute;
+}
+.year-item.slide-in-right {
+  transform: translateX(-120%) scale(0.8);
+  opacity: 0;
+  position: absolute;
+}
+.year-item.current.slide-in {
+  transform: translateX(0) scale(1);
+  opacity: 1;
+  position: static;
+}
+.year-item.near {
+  font-size: 40px;
+  width: 120px;
+  height: 120px;
+  opacity: 0.6;
+  z-index: 1;
+}
+.year-item.far {
+  font-size: 28px;
+  width: 80px;
+  height: 80px;
+  opacity: 0.2;
+  z-index: 0;
+}
+.year-arrow {
+  background: none;
+  border: none;
+  font-size: 48px;
+  color: #64574c;
+  cursor: pointer;
+  margin: 0 16px;
+  user-select: none;
+  transition: color 0.2s;
+}
+.year-arrow:active {
+  color: #d68418;
+}
+
+/* 月份選擇 */
+.month-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+  margin: 40px 0 0 0;
+}
+.month-item {
+  font-family: Fatface, Arial, sans-serif;
+  font-size: 36px;
+  color: #64574c;
+  background: #fff;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 16px #0001;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+.month-item.selected, .month-item:hover {
+  background: #ffe5cf;
+  color: #d68418;
+  transform: scale(1.08);
+}
+
+/* 日期選擇 */
+.date-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  margin: 40px 0 0 0;
+}
+.date-item {
+  font-family: Fatface, Arial, sans-serif;
+  font-size: 28px;
+  color: #64574c;
+  background: #fff;
+  border-radius: 50%;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  flex-direction: column;/* 垂直排列 */
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0001;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+/* 日期數字 */
+.date-item > div {
+  margin-top: 4px; /* 圖案和數字間距 */
+  font-size: 14px;
+  color: #64574c;
+  text-align: center;
+}
+
+/* 日期選擇樣式 */
+.date-item.selected, .date-item:hover {
+  background: #ffe5cf;
+  color: #d68418;
+  transform: scale(1.08);
+}
+.date-item.has-mood[data-mood="開心"] {
+  background: linear-gradient(135deg, #fffbe9 60%, #ffd6a0 100%);
+}
+.date-item.has-mood[data-mood="興奮"] {
+  background: linear-gradient(135deg, #ffe5f0 60%, #ffb6b9 100%);
+}
+.date-item.has-mood[data-mood="幸福"] {
+  background: linear-gradient(135deg, #e0eaff 60%, #b5c6ff 100%);
+}
+.date-item.has-mood[data-mood="傷心"] {
+  background: linear-gradient(135deg, #424037 60%, #ffd6a0 100%);
+}
+.date-item.has-mood[data-mood="焦慮"] {
+  background: linear-gradient(135deg, #141eda 60%, #ffb6b9 100%);
+}
+.date-item.has-mood[data-mood="生氣"] {
+  background: linear-gradient(135deg, #916403 60%, #b5c6ff 100%);
+}
+.year-selector, .month-selector, .date-selector {
+  opacity: 1;
+  transition: opacity 0.3s;
+  display: none;
+}
+.year-selector.show, .month-selector.show, .date-selector.show {
+  display: flex !important;
+  opacity: 1;
+}
+.year-selector.hide, .month-selector.hide, .date-selector.hide {
+  opacity: 0;
+}
+
+.mood-of-date {
+  width: 100vw;
+  min-width: 800px; /* 最小寬度 */
+  height: 100vh;
+  background: #ffe5cf;
+  display: none; /* 初始隱藏 */
+  pointer-events: none; /* 禁止互動 */
+  flex-direction: column; /* 垂直排列 */
+  align-items: center; /* 水平置中 */
+  justify-content: flex-start; /* 垂直置頂 */
+  position: absolute; /* 相對定位 */
+  top: 0;
+  left: 0;
+  z-index: 3; /* 確保在封面上層 */
+  opacity: 0; /* 初始不透明度 */
+  transition: opacity 0.7s; /* 過渡效果 */
+  pointer-events: none; /* 確保不會擋到按鈕 */
+}
+
+.mood-of-date.show {
+  display: flex; /* 顯示 mood-of-date.show */
+  opacity: 1; /* 不透明度為1 */
+  transform: scale(1); /* 恢復原始大小 */
+  pointer-events: auto; /* 允許互動 */
+}
+
+/* 讓三個 selector 都有動畫 */
+.year-selector, .month-selector, .date-selector {
+  opacity: 1;
+  transition: opacity 0.5s;
+  display: none;
+}
+.year-selector.show, .month-selector.show, .date-selector.show {
+  display: flex !important;
+  opacity: 1;
+}
+.year-selector.hide, .month-selector.hide, .date-selector.hide {
+  opacity: 0;
+}
+
+.diary-title{
+  background: #fff;
+  border-radius: 40px;
+  font-size: 22px;
+  font-family: CatWord, Arial, sans-serif;
+  color: #64574c;
+  padding: 16px 44px; /* 按鈕內邊距 */
+  box-shadow: 0 2px 16px #0001;
+  margin: 0px auto 10px 0px; /* 上下邊距 */
+  text-align: center; /* 文字中間 */
+  pointer-events: none;
+  cursor: default;
+  user-select: none;
+  display: inline-block; /* 讓標題區塊成為行內塊元素 */
+  align-items: flex-start;    /* Flexbox時靠左 */
+  width: auto;               /* 讓寬度自適應內容 */
+}
+
+.dairy-header {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start; /* 靠左 */
+  align-items: center;
+  gap: 24px; /* 如需間距 */
+}
+
+.dairy-subtitle {
+  margin: 50px 0px 0px 0px;
+  font-size: 18px;
+}
+
+.year-item:hover,
+.year-item:focus {
+  transform: scale(1.12) rotate(-4deg);
+  box-shadow: 0 8px 32px #d6841833, 0 2px 16px #0001;
+  background: #fffbe9;
+  opacity: 1 !important;
+}
+
+.year-item:active {
+  transform: scale(0.96) rotate(2deg);
+  box-shadow: 0 2px 8px #d6841811;
+}
+
+.year-list.slide-left {
+  transform: translateX(-100%);
+}
+.year-list.slide-right {
+  transform: translateX(100%);
+}
+.year-list.reset {
+  transition: none;
+  transform: translateX(0);
+}
+
+#record-detail {
+  background: #fff7f0;
+  border-radius: 24px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 32px 28px;
+  margin: 24px auto 0 auto;
+  max-width: 600px;
+  min-width: 320px;
+  font-size: 18px;
+  color: #64574c;
+}
+
+/* 返回按鈕樣式 */
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #d4a574;
+  border-radius: 25px;
+  padding: 8px 16px;
+  font-family: CatWord, Arial, sans-serif;
+  font-size: 16px;
+  color: #8b5a3c;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.back-btn:hover {
+  background-color: #d4a574;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* tomorrow-block2 特定樣式 */
+.tomorrow-block2 .card-item {
+  display: block !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin: 15px;
+  /* 增大卡片尺寸 */
+  width: 600px !important;
+  height: 400px !important;
+  /* 增強視覺效果 */
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border-radius: 28px;
+}
+
+.tomorrow-block2 .card-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin: 40px 0;
+  flex-wrap: wrap;
+  /* 響應式佈局 */
+  max-width: 1800px;
+  width: 100%;
+}
+
+.tomorrow-block2 .card-item.selected {
+  transform: scale(1.08) !important;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+  opacity: 1 !important;
+  /* 增加邊框突出選中效果 */
+  border: 4px solid #fff;
+}
+
+.tomorrow-block2 .card-item.selected textarea {
+  display: block !important;
+}
+
+/* tomorrow-block2 卡片背景顏色 */
+.tomorrow-block2 .card-item[data-card="1"] {
+  background: #d4a574 !important; /* 棕色卡片 */
+}
+
+.tomorrow-block2 .card-item[data-card="2"] {
+  background: #5a5a5a !important; /* 黑色卡片 */
+}
+
+.tomorrow-block2 .card-item[data-card="3"] {
+  background: #f5f5f5 !important; /* 白色卡片 */
+}
+
+/* tomorrow-block2 中的 textarea 樣式 */
+.tomorrow-block2 .card-textarea-brown,
+.tomorrow-block2 .card-textarea-black,
+.tomorrow-block2 .card-textarea-white {
+  display: none;
+  /* 增大 textarea 以匹配更大的卡片 */
+  width: 520px !important;
+  height: 280px !important;
+  font-size: 16px !important;
+  padding: 20px !important;
+  border-radius: 16px !important;
+  margin: 20px auto !important;
+}
+
+.tomorrow-block2 .card-item.selected .card-textarea-brown,
+.tomorrow-block2 .card-item.selected .card-textarea-black,
+.tomorrow-block2 .card-item.selected .card-textarea-white {
+  display: block !important;
 }

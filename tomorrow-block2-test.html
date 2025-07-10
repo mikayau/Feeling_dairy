@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tomorrow Block2 測試 - 大卡片設計</title>
+    <link rel="stylesheet" href="Feeling_dairy.css">
+    <style>
+        /* 測試頁面專用樣式 */
+        .test-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <div>卡片尺寸: 600x400px</div>
+        <div>貼紙尺寸: 80x80px</div>
+        <div>點擊卡片來切換選擇</div>
+    </div>
+    
+    <div class="tomorrow-block2 show" style="display: flex; pointer-events: auto;">
+        <div class="main-title-block">
+            <div class="subtitle">明天的我</div>
+            <div class="feeling-title">FEELING</div>
+        </div>
+        
+        <div class="card-list">
+            <div class="card-item selected" data-card="1" onclick="selectCard(1)">
+                <img src="images/sticker_1.png" alt="貼紙1" class="card-sticker">
+                <textarea class="card-textarea-brown" readonly>這是棕色卡片的測試內容。新的卡片設計更大更突出，能夠提供更好的視覺體驗。文字區域也相應增大，可以容納更多內容。</textarea>
+            </div>
+            <div class="card-item" data-card="2" onclick="selectCard(2)">
+                <img src="images/sticker_2.png" alt="貼紙2" class="card-sticker">
+                <textarea class="card-textarea-black" readonly>這是黑色卡片的測試內容。卡片的陰影效果和邊框設計讓它看起來更有層次感。</textarea>
+            </div>
+            <div class="card-item" data-card="3" onclick="selectCard(3)">
+                <img src="images/sticker_3.png" alt="貼紙3" class="card-sticker">
+                <textarea class="card-textarea-white" readonly>這是白色卡片的測試內容。所有卡片都有一致的設計風格，但顏色搭配不同。</textarea>
+            </div>
+        </div>
+        
+        <div class="back-button-container">
+            <button class="back-button" onclick="window.close()">返回</button>
+        </div>
+    </div>
+    
+    <script>
+        function selectCard(cardNumber) {
+            // 清除所有選中狀態
+            document.querySelectorAll('.card-item').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // 選中點擊的卡片
+            document.querySelector(`[data-card="${cardNumber}"]`).classList.add('selected');
+        }
+    </script>
+</body>
+</html>
