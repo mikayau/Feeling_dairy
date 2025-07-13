@@ -632,17 +632,74 @@ function showRecordModal(record, dateStr) {
   });
 }
 
-// 心情對應圖檔
-function getMoodImg(mood) {
+// 心情對應圖檔和顏色
+function getMoodData(mood) {
   switch (mood) {
-    case '開心': return 'images/happy.gif';
-    case '興奮': return 'images/excited.gif';
-    case '幸福': return 'images/blessed.gif';
-    case '傷心': return 'images/sad.gif';
-    case '焦慮': return 'images/anxious.gif';
-    case '生氣': return 'images/angry.gif';
-    default: return 'images/happy.gif';
+    case '開心': 
+      return {
+        image: 'images/happy.gif',
+        gradient: 'linear-gradient(180deg, #ff6767, #ffd1d1)',
+        primaryColor: '#ff6767',
+        secondaryColor: '#ffd1d1'
+      };
+    case '興奮': 
+      return {
+        image: 'images/excited.gif',
+        gradient: 'linear-gradient(180deg, #ff9869, #ffd2bd)',
+        primaryColor: '#ff9869',
+        secondaryColor: '#ffd2bd'
+      };
+    case '幸福': 
+      return {
+        image: 'images/blessed.gif',
+        gradient: 'linear-gradient(180deg, #ffda6a, #fff7de)',
+        primaryColor: '#ffda6a',
+        secondaryColor: '#fff7de'
+      };
+    case '傷心': 
+      return {
+        image: 'images/sad.gif',
+        gradient: 'linear-gradient(180deg, #7cce6b, #d8ffd0)',
+        primaryColor: '#7cce6b',
+        secondaryColor: '#d8ffd0'
+      };
+    case '焦慮': 
+      return {
+        image: 'images/anxious.gif',
+        gradient: 'linear-gradient(180deg, #84a9ff, #f5f8ff)',
+        primaryColor: '#84a9ff',
+        secondaryColor: '#f5f8ff'
+      };
+    case '生氣': 
+      return {
+        image: 'images/angry.gif',
+        gradient: 'linear-gradient(180deg, #f093ff, #fdf1ff)',
+        primaryColor: '#f093ff',
+        secondaryColor: '#fdf1ff'
+      };
+    default: 
+      return {
+        image: 'images/happy.gif',
+        gradient: 'linear-gradient(180deg, #ff6767, #ffd1d1)',
+        primaryColor: '#ff6767',
+        secondaryColor: '#ffd1d1'
+      };
   }
+}
+
+// 為了向後兼容，保留原來的函數
+function getMoodImg(mood) {
+  return getMoodData(mood).image;
+}
+
+// 獲取心情顏色的便捷函數
+function getMoodColor(mood) {
+  return getMoodData(mood).primaryColor;
+}
+
+// 獲取心情漸層的便捷函數
+function getMoodGradient(mood) {
+  return getMoodData(mood).gradient;
 }
 
 // 動畫切換函式
@@ -796,7 +853,7 @@ function showTodayRecord2(record, dateStr) {
   });
 
   // 填入心情指數（滑桿）
-  const moodSlider = todayRecord2.querySelector('.mood-slider');
+  const moodSlider = todayRecord2.querySelector('#mood-slider2');
   if (moodSlider && record && record.mood) {
     // 如果 record.mood 是心情名稱，需要轉換為數字
     if (typeof record.mood === 'string' && isNaN(record.mood)) {
@@ -1116,16 +1173,15 @@ function createTomorrowBlock2Card(tomorrowData) {
   switch (tomorrowData.cardType) {
     case '1':
       textareaClass = 'card-textarea-brown';
-      cardElement.style.backgroundColor = '#8B4513'; // 棕色背景
+      cardElement.style.backgroundColor = '#ffd6a0'; // 棕色背景
       break;
     case '2':
       textareaClass = 'card-textarea-black';
-      cardElement.style.backgroundColor = '#333333'; // 黑色背景
+      cardElement.style.backgroundColor = '#64574c'; // 黑色背景
       break;
     case '3':
       textareaClass = 'card-textarea-white';
       cardElement.style.backgroundColor = '#FFFFFF'; // 白色背景
-      cardElement.style.border = '2px solid #ddd';
       break;
     default:
       textareaClass = 'card-textarea-brown';

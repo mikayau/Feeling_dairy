@@ -2410,15 +2410,15 @@ body {
 
 /* tomorrow-block2 卡片背景顏色 */
 .tomorrow-block2 .card-item[data-card="1"] {
-  background: #d4a574 !important; /* 棕色卡片 */
+  background: #ffd6a0 !important; /* 棕色卡片 */
 }
 
 .tomorrow-block2 .card-item[data-card="2"] {
-  background: #5a5a5a !important; /* 黑色卡片 */
+  background: #64574c !important; /* 黑色卡片 */
 }
 
 .tomorrow-block2 .card-item[data-card="3"] {
-  background: #f5f5f5 !important; /* 白色卡片 */
+  background: #FFFFFF !important; /* 白色卡片 */
 }
 
 /* tomorrow-block2 中的 textarea 樣式 */
