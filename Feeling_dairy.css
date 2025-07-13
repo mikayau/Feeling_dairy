@@ -168,7 +168,76 @@ body {
   /* 懸停時變為不透明 */
   /* 滑過更明顯 */
 }
-
+.arrow-btn2 {
+  position: absolute;
+  /* 絕對定位 */
+  bottom: 10%;
+  /* 靠底 */
+  left: 50%;
+  /* 靠左 */
+  background: none;
+  /* 無背景 */
+  border: none;
+  /* 無邊框 */
+  outline: none;
+  /* 點擊時無外框 */
+  box-shadow: none;
+  /* 無陰影（除非你想自訂） */
+  cursor: pointer;
+  /* 鼠標指針變為手形 */
+  display: inline-block;
+  width: 70px;
+  font-size: 32px;
+  margin-top: 4px;
+  color: #fff;
+  /* 白色箭頭 */
+  opacity: 0.7;
+  animation: float-arrow 1.8s ease-in-out infinite;
+  /* 浮動動畫 */
+  transition: opacity 0.2s ease-in-out;
+  z-index: 10; /* 確保箭頭在最上層 */
+  pointer-events: all; /* 確保可互動 */
+}
+.arrow-btn2:hover {
+  opacity: 1;
+  /* 懸停時變為不透明 */
+  /* 滑過更明顯 */
+}
+.arrow-btn3 {
+  position: absolute;
+  /* 絕對定位 */
+  bottom: -10%;
+  /* 靠底 */
+  left: 50%;
+  /* 靠左 */
+  background: none;
+  /* 無背景 */
+  border: none;
+  /* 無邊框 */
+  outline: none;
+  /* 點擊時無外框 */
+  box-shadow: none;
+  /* 無陰影（除非你想自訂） */
+  cursor: pointer;
+  /* 鼠標指針變為手形 */
+  display: inline-block;
+  width: 70px;
+  font-size: 32px;
+  margin-top: 4px;
+  color: #fff;
+  /* 白色箭頭 */
+  opacity: 0.7;
+  animation: float-arrow 1.8s ease-in-out infinite;
+  /* 浮動動畫 */
+  transition: opacity 0.2s ease-in-out;
+  z-index: 10; /* 確保箭頭在最上層 */
+  pointer-events: all; /* 確保可互動 */
+}
+.arrow-btn3:hover {
+  opacity: 1;
+  /* 懸停時變為不透明 */
+  /* 滑過更明顯 */
+}
 @keyframes float-arrow {
   0% {
     transform: translateX(-50%) translateY(0);
@@ -1156,55 +1225,7 @@ body {
   }
 }
 
-/* tomorrow-block2 響應式設計 */
-@media (max-width: 1400px) {
-  .tomorrow-block2 .card-item {
-    width: 500px !important;
-    height: 340px !important;
-  }
-  
-  .tomorrow-block2 .card-textarea-brown,
-  .tomorrow-block2 .card-textarea-black,
-  .tomorrow-block2 .card-textarea-white {
-    width: 420px !important;
-    height: 240px !important;
-  }
-  
-  .tomorrow-block2 .card-list {
-    gap: 30px;
-  }
 
-  .tomorrow-block2 .card-sticker {
-    width: 70px !important;
-    height: 70px !important;
-  }
-}
-
-@media (max-width: 1024px) {
-  .tomorrow-block2 .card-item {
-    width: 450px !important;
-    height: 300px !important;
-  }
-  
-  .tomorrow-block2 .card-textarea-brown,
-  .tomorrow-block2 .card-textarea-black,
-  .tomorrow-block2 .card-textarea-white {
-    width: 370px !important;
-    height: 200px !important;
-  }
-  
-  .tomorrow-block2 .card-list {
-    gap: 20px;
-    flex-direction: column;
-  }
-
-  .tomorrow-block2 .card-sticker {
-    width: 60px !important;
-    height: 60px !important;
-    top: 20px;
-    right: 20px;
-  }
-}
 .tomorrow-block {
   width: 100vw;
   min-width: 800px; /* 最小寬度 */
@@ -1225,7 +1246,7 @@ body {
 }
 .tomorrow-block2 {
   width: 100vw;
-  min-width: 1200px; /* 增加最小寬度以容納更大的卡片 */
+  min-width: 800px; /* 增加最小寬度以容納更大的卡片 */
   height: 100vh;
   background: #ffe5cf;
   display: none; /* 初始隱藏 */
@@ -1261,9 +1282,9 @@ body {
 .choose-cards {
   position: absolute;
   /* 絕對定位 */
-  right: 160px;
+  right: 40px;
   /* 靠右 */
-  top: 130px;
+  top: 190px;
   /* 靠上 */
   color: #64574c;
   /* 咖啡色 你的情緒日記 */
@@ -1899,107 +1920,66 @@ body {
 
 /* 返回按鈕樣式 */
 .back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 2px solid #d4a574;
-  border-radius: 25px;
-  padding: 8px 16px;
+  position: relative;
   font-family: CatWord, Arial, sans-serif;
   font-size: 16px;
-  color: #8b5a3c;
+  color: #64574c;
   cursor: pointer;
   z-index: 1000;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: none;
+  margin: 0px 0px 130px 0px;
+  background: none;
 }
 
 .back-btn:hover {
-  background-color: #d4a574;
-  color: white;
+  color: #a67c52;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .back-btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.back-btn2 {
+  position: relative;
+  font-family: CatWord, Arial, sans-serif;
+  font-size: 16px;
+  color: #64574c;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border: none;
+  background: none;
 }
 
-/* tomorrow-block2 特定樣式 */
-.tomorrow-block2 .card-item {
-  display: block !important;
-  opacity: 1 !important;
-  pointer-events: auto;
-  position: relative !important;
-  left: auto !important;
-  top: auto !important;
-  transform: none !important;
-  margin: 15px;
-  /* 增大卡片尺寸 */
-  width: 600px !important;
-  height: 400px !important;
-  /* 增強視覺效果 */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  border-radius: 28px;
+.back-btn2:hover {
+  color: #a67c52;
+  transform: translateY(-2px);
 }
 
-.tomorrow-block2 .card-list {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 40px;
-  margin: 40px 0;
-  flex-wrap: wrap;
-  /* 響應式佈局 */
-  max-width: 1800px;
-  width: 100%;
+.back-btn2:active {
+  transform: translateY(0);
+}
+.back-btn3 {
+  position: relative;
+  font-family: CatWord, Arial, sans-serif;
+  font-size: 16px;
+  color: #64574c;
+  cursor: pointer;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  border: none;
+  background: none;
+  margin: 60px 0px 0px 0px;
 }
 
-.tomorrow-block2 .card-item.selected {
-  transform: scale(1.08) !important;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
-  opacity: 1 !important;
-  /* 增加邊框突出選中效果 */
-  border: 4px solid #fff;
+.back-btn3:hover {
+  color: #a67c52;
+  transform: translateY(-2px);
 }
 
-.tomorrow-block2 .card-item.selected textarea {
-  display: block !important;
-}
-
-/* tomorrow-block2 卡片背景顏色 */
-.tomorrow-block2 .card-item[data-card="1"] {
-  background: #d4a574 !important; /* 棕色卡片 */
-}
-
-.tomorrow-block2 .card-item[data-card="2"] {
-  background: #5a5a5a !important; /* 黑色卡片 */
-}
-
-.tomorrow-block2 .card-item[data-card="3"] {
-  background: #f5f5f5 !important; /* 白色卡片 */
-}
-
-/* tomorrow-block2 中的 textarea 樣式 */
-.tomorrow-block2 .card-textarea-brown,
-.tomorrow-block2 .card-textarea-black,
-.tomorrow-block2 .card-textarea-white {
-   display: none;
-  /* 增大 textarea 以匹配更大的卡片 */
-  width: 520px !important;
-  height: 280px !important;
-  font-size: 16px !important;
-  padding: 20px !important;
-  border-radius: 16px !important;
-  margin: 20px auto !important;
-}
-
-.tomorrow-block2 .card-item.selected .card-textarea-brown,
-.tomorrow-block2 .card-item.selected .card-textarea-black,
-.tomorrow-block2 .card-item.selected .card-textarea-white {
-  display: block !important;
+.back-btn3:active {
+  transform: translateY(0);
 }
 
 /* 卡片單跳動畫 */
@@ -2084,17 +2064,6 @@ body {
 }
 #sticker-btn.show {
   cursor: pointer;
-}
-.sticker-container {
-  position: absolute;
-  top: 250px;
-  left: 0;
-  width: 360px;
-  height: 360px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
 }
 
 /* 心情日記 */
@@ -2396,36 +2365,6 @@ body {
   color: #64574c;
 }
 
-/* 返回按鈕樣式 */
-.back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: 2px solid #d4a574;
-  border-radius: 25px;
-  padding: 8px 16px;
-  font-family: CatWord, Arial, sans-serif;
-  font-size: 16px;
-  color: #8b5a3c;
-  cursor: pointer;
-  z-index: 1000;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.back-btn:hover {
-  background-color: #d4a574;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.back-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
 /* tomorrow-block2 特定樣式 */
 .tomorrow-block2 .card-item {
   display: block !important;
@@ -2437,8 +2376,8 @@ body {
   transform: none !important;
   margin: 15px;
   /* 增大卡片尺寸 */
-  width: 600px !important;
-  height: 400px !important;
+  width: 450px !important;
+  height: 300px !important;
   /* 增強視覺效果 */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   border-radius: 28px;
@@ -2460,8 +2399,6 @@ body {
   transform: scale(1.08) !important;
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
   opacity: 1 !important;
-  /* 增加邊框突出選中效果 */
-  border: 4px solid #fff;
 }
 
 .tomorrow-block2 .card-item.selected textarea {
@@ -2499,4 +2436,133 @@ body {
 .tomorrow-block2 .card-item.selected .card-textarea-black,
 .tomorrow-block2 .card-item.selected .card-textarea-white {
   display: block !important;
+}
+
+.edit-mood-btn{
+  display: block; /* 讓按鈕成為塊級元素 */
+  background: none; /* 無背景 */
+  position: static; /* 靜態定位 */
+  color: #64574c; /* 咖啡色文字 */
+  font-size: 16px; /* 字體大小 */
+  font-family: CatWord, Arial, sans-serif;
+  border: none; /* 無邊框 */
+  cursor: pointer; /* 鼠標指針變為手形 */
+  transition: background 0.2s, color 0.2s, transform 0.2s; /* 過渡效果 */
+}
+
+.edit-record-btn2{
+  display: block; /* 讓按鈕成為塊級元素 */
+  background: none; /* 無背景 */
+  position: static; /* 靜態定位 */
+  color: #64574c; /* 咖啡色文字 */
+  font-size: 16px; /* 字體大小 */
+  font-family: CatWord, Arial, sans-serif;
+  border: none; /* 無邊框 */
+  cursor: pointer; /* 鼠標指針變為手形 */
+  transition: background 0.2s, color 0.2s, transform 0.2s; /* 過渡效果 */
+}
+
+.edit-tomorrow-btn2{display: block; /* 讓按鈕成為塊級元素 */
+  background: none; /* 無背景 */
+  position: static; /* 靜態定位 */
+  color: #64574c; /* 咖啡色文字 */
+  font-size: 16px; /* 字體大小 */
+  font-family: CatWord, Arial, sans-serif;
+  border: none; /* 無邊框 */
+  cursor: pointer; /* 鼠標指針變為手形 */
+  transition: background 0.2s, color 0.2s, transform 0.2s; /* 過渡效果 */}
+
+.edit-mood-btn:hover {
+  background: #ffe5cf; /* 懸停時背景色 */
+  color: #a67c52; /* 咖啡色文字 */
+  transform: scale(1.05); /* 懸停時稍微放大 */
+}
+
+.edit-record-btn2 {
+  background: #ffe5cf; /* 懸停時背景色 */
+  color: #a67c52; /* 咖啡色文字 */
+  transform: scale(1.05); /* 懸停時稍微放大 */
+}
+
+.edit-tomorrow-btn2:hover {
+  background: #ffe5cf; /* 懸停時背景色 */
+  color: #a67c52; /* 咖啡色文字 */
+  transform: scale(1.05); /* 懸停時稍微放大 */
+}
+
+.enter-mood-btn{
+  display: block; /* 讓按鈕成為塊級元素 */
+  background: none; /* 無背景 */
+  position: static; /* 靜態定位 */
+  font-size: 16px; /* 字體大小 */
+  font-family: CatWord, Arial, sans-serif;
+  border: none; /* 無邊框 */
+  cursor: pointer; /* 鼠標指針變為手形 */
+  transition: background 0.2s, color 0.2s, transform 0.2s; /* 過渡效果 */
+}
+.enter-record-btn2{
+  display: block; /* 讓按鈕成為塊級元素 */
+  background: none; /* 無背景 */
+  position: static; /* 靜態定位 */
+  font-size: 16px; /* 字體大小 */
+  font-family: CatWord, Arial, sans-serif;
+  border: none; /* 無邊框 */
+  cursor: pointer; /* 鼠標指針變為手形 */
+  transition: background 0.2s, color 0.2s, transform 0.2s; /* 過渡效果 */
+}
+.enter-tomorrow-btn2{
+  display: block; /* 讓按鈕成為塊級元素 */
+  background: none; /* 無背景 */
+  position: static; /* 靜態定位 */
+  font-size: 16px; /* 字體大小 */
+  font-family: CatWord, Arial, sans-serif;
+  border: none; /* 無邊框 */
+  cursor: pointer; /* 鼠標指針變為手形 */
+  transition: background 0.2s, color 0.2s, transform 0.2s; /* 過渡效果 */}
+
+.enter-mood-btn:hover {
+  background: #ffe5cf; /* 懸停時背景色 */
+  color: #a67c52; /* 咖啡色文字 */
+  transform: scale(1.05); /* 懸停時稍微放大 */
+}
+
+.enter-record-btn2:hover {
+  background: #ffe5cf; /* 懸停時背景色 */
+  color: #a67c52; /* 咖啡色文字 */
+  transform: scale(1.05); /* 懸停時稍微放大 */
+}
+
+.enter-tomorrow-btn2{
+  background: #ffe5cf; /* 懸停時背景色 */
+  color: #a67c52; /* 咖啡色文字 */
+  transform: scale(1.05); /* 懸停時稍微放大 */}
+
+.btn-block {
+  display: flex; /* 使用 Flexbox 來排列按鈕 */
+  justify-content: center; /* 水平置中 */
+  align-items: center; /* 垂直置中 */
+  gap: 16px; /* 按鈕之間的間距 */
+  margin-top: 32px; /* 上邊距 */
+}
+
+.btn-block2 {
+  display: flex; /* 使用 Flexbox 來排列按鈕 */
+  justify-content: center; /* 水平置中 */
+  align-items: center; /* 垂直置中 */
+  gap: 16px; /* 按鈕之間的間距 */
+  margin-top: 32px; /* 上邊距 */
+}
+.enter-tomorrow-btn2{display: flex; /* 使用 Flexbox 來排列按鈕 */
+  justify-content: center; /* 水平置中 */
+  align-items: center; /* 垂直置中 */
+  gap: 16px; /* 按鈕之間的間距 */
+}
+
+.title_and_back-btn{
+  display: flex; /* 使用 Flexbox 來排列標題和返回按鈕 */
+  justify-content: space-between; /* 水平分散對齊 */
+  align-items: center; /* 垂直置中 */
+  width: 100%; /* 寬度佔滿容器 */
+  padding: 20px; /* 上下左右邊距 */
+  box-sizing: border-box; /* 包括內邊距和邊框在內的寬度計算 */
 }

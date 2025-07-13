@@ -1134,12 +1134,11 @@ function createTomorrowBlock2Card(tomorrowData) {
   
   // 設定卡片基本樣式
   cardElement.style.position = 'relative';
-  cardElement.style.width = '300px';
-  cardElement.style.height = '200px';
-  cardElement.style.borderRadius = '12px';
-  cardElement.style.padding = '20px';
+  cardElement.style.width = '450px';
+  cardElement.style.height = '300px';
   cardElement.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
   cardElement.style.margin = '10px auto';
+  cardElement.style.borderRadius = '24px';
   
   // 創建文字區域
   const textarea = document.createElement('textarea');
@@ -1171,8 +1170,8 @@ function createTomorrowBlock2Card(tomorrowData) {
         const stickerImg = document.createElement('img');
         stickerImg.src = `images/sticker_${getStickerNumber(stickerType.trim())}.png`;
         stickerImg.style.position = 'absolute';
-        stickerImg.style.width = '40px';
-        stickerImg.style.height = '40px';
+        stickerImg.style.width = '70px';
+        stickerImg.style.height = '70px';
         stickerImg.style.right = `${16 + (index * 50)}px`;
         stickerImg.style.bottom = '16px';
         stickerImg.style.zIndex = '10';
@@ -1192,8 +1191,8 @@ function createTomorrowBlock2Sticker(stickerType) {
   stickerElement.src = `images/sticker_${getStickerNumber(stickerType)}.png`;
   stickerElement.alt = stickerType;
   stickerElement.setAttribute('data-sticker', stickerType);
-  stickerElement.style.width = '60px';
-  stickerElement.style.height = '60px';
+  stickerElement.style.width = '70px';
+  stickerElement.style.height = '70px';
   stickerElement.style.margin = '10px';
   stickerElement.style.opacity = '1';
   stickerElement.style.transform = 'scale(1.1)';
