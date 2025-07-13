@@ -297,38 +297,23 @@
         <!-- 返回按鈕 -->
         <button class="back-btn" id="tomorrow-block2-back-btn">◀ 返回</button>
         <div class="tomorrow-container">
-            <div class="tomorrow-title"> 明日期望</div>
-            <div class="choose-cards">請選擇喜歡的卡片</div>
-            <!-- 卡片 -->
-            <div class="card-list">
-                <div class="card-item" data-card="1">
-                    <textarea class="card-textarea-brown" data-card="brown-card " placeholder="寫下你的期望..."
-                        style="display:none"></textarea>
-                </div>
-                <div class="card-item" data-card="2">
-                    <textarea class="card-textarea-black" data-card="black-card" placeholder="寫下你的期望..."
-                        style="display:none"></textarea>
-                </div>
-                <div class="card-item" data-card="3">
-                    <textarea class="card-textarea-white" data-card="white-card " placeholder="寫下你的期望..."
-                        style="display:none"></textarea>
-                </div>
+            <div class="tomorrow-title">明日期望</div>
+            <div class="choose-cards">已選擇的卡片</div>
+            
+            <!-- 只顯示已保存的卡片 -->
+            <div class="card-list" id="tomorrow-block2-card-list">
+                <!-- 這裡會由 JavaScript 動態生成已保存的卡片 -->
             </div>
+            
             <div class="sticker-container">
                 <!-- 文字 -->
-                <div class="choose-stickers">可以選擇喜歡的貼紙元素添加</div>
-                <!-- 貼紙 -->
-                <div class="sticker-area" id="sticker-area">
-                    <img src="images/sticker_1.png" class="sticker" style="--i:1;" data-sticker="shining">
-                    <img src="images/sticker_2.png" class="sticker" style="--i:2;" data-sticker="heart">
-                    <img src="images/sticker_3.png" class="sticker" style="--i:3;" data-sticker="stars_3">
-                    <img src="images/sticker_4.png" class="sticker" style="--i:4;" data-sticker="flowers">
-                    <img src="images/sticker_5.png" class="sticker" style="--i:5;" data-sticker="stars_2">
-                    <img src="images/sticker_6.png" class="sticker" style="--i:6;" data-sticker="butterfly">
+                <div class="choose-stickers">已選擇的貼紙元素</div>
+                <!-- 貼紙區域會由 JavaScript 動態顯示 -->
+                <div class="sticker-area" id="tomorrow-block2-sticker-area">
+                    <!-- 這裡會由 JavaScript 動態生成已保存的貼紙 -->
                 </div>
-                <!-- 修改按鈕 -->
+                <!-- 修改和確認按鈕 -->
                 <button id="edit-tomorrow-btn2" disabled>修改</button>
-                <!-- 確認按鈕 -->
                 <button id="enter-tomorrow-btn2" disabled>確認</button>
             </div>
         </div>

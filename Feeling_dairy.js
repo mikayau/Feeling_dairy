@@ -1026,13 +1026,21 @@ function showTomorrowBlock2(record, dateStr) {
   console.log('showTomorrowBlock2 - record:', record);
   console.log('showTomorrowBlock2 - dateStr:', dateStr);
 
-  // 使用 showPage 函數來顯示頁面
-  showPage('tomorrow-block2');
+  // 隱藏所有其他頁面
+  const pages = ['cover', 'main-menu', 'mood-select', 'today-record', 'tomorrow-block', 'mood-of-date', 'mood-select2', 'today-record2'];
+  pages.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.classList.remove('show');
+      element.style.display = 'none';
+    }
+  });
 
-  // 確保頁面元素有正確的 CSS 類別
+  // 顯示 tomorrow-block2
   const tomorrowBlock2 = document.getElementById('tomorrow-block2');
   if (tomorrowBlock2) {
-    tomorrowBlock2.classList.add('tomorrow-block2');
+    tomorrowBlock2.style.display = 'flex';
+    tomorrowBlock2.classList.add('show');
   }
 
   // 獲取並顯示已保存的明天期望數據
@@ -1042,131 +1050,204 @@ function showTomorrowBlock2(record, dateStr) {
 // 獲取並顯示已保存的明天期望數據
 async function loadTomorrowData(dateStr) {
   try {
-    const response = await fetch(`/api/getTomorrow?date=${dateStr}`);
+    const response = await fetch(`http://localhost:3000/api/getTomorrow?date=${dateStr}&user=${USER_ID}`);
     const tomorrowData = await response.json();
     
     console.log('loadTomorrowData - tomorrowData:', tomorrowData);
     
     // 顯示已保存的數據
-    displayTomorrowData(tomorrowData, dateStr);
+    displayTomorrowBlock2Data(tomorrowData, dateStr);
     
   } catch (error) {
     console.error('載入明天期望數據失敗:', error);
     // 如果沒有數據，顯示空白狀態
-    displayTomorrowData({}, dateStr);
+    displayTomorrowBlock2Data({}, dateStr);
   }
 }
 
-// 顯示明天期望數據
-function displayTomorrowData(tomorrowData, dateStr) {
-  const cardItems = document.querySelectorAll('#tomorrow-block2 .card-item');
-  const stickers = document.querySelectorAll('#tomorrow-block2 .sticker');
+// 顯示明天期望數據 - 只顯示已保存的卡片和貼紙
+function displayTomorrowBlock2Data(tomorrowData, dateStr) {
+  const cardListContainer = document.getElementById('tomorrow-block2-card-list');
+  const stickerAreaContainer = document.getElementById('tomorrow-block2-sticker-area');
   
-  // 首先確保所有卡片都是可見的
-  cardItems.forEach(item => {
-    item.style.display = 'block';
-    item.classList.remove('selected');
-    const textarea = item.querySelector('textarea');
-    if (textarea) {
-      textarea.style.display = 'none';
-      textarea.value = '';
-      textarea.disabled = true;
+  // 清空容器
+  if (cardListContainer) cardListContainer.innerHTML = '';
+  if (stickerAreaContainer) stickerAreaContainer.innerHTML = '';
+  
+  // 如果有保存的數據，創建並顯示對應的卡片和貼紙
+  if (tomorrowData && tomorrowData.cardType && cardListContainer) {
+    console.log('顯示已保存的卡片數據:', tomorrowData);
+    
+    // 顯示卡片
+    const cardElement = createTomorrowBlock2Card(tomorrowData);
+    cardListContainer.appendChild(cardElement);
+    
+    // 顯示貼紙
+    if (tomorrowData.stickerType && stickerAreaContainer) {
+      // 如果有多個貼紙類型，用逗號分隔
+      const stickerTypes = tomorrowData.stickerType.includes(',') 
+        ? tomorrowData.stickerType.split(',') 
+        : [tomorrowData.stickerType];
+      
+      stickerTypes.forEach(stickerType => {
+        if (stickerType.trim()) {
+          const stickerElement = createTomorrowBlock2Sticker(stickerType.trim());
+          stickerAreaContainer.appendChild(stickerElement);
+        }
+      });
     }
-  });
-  
-  stickers.forEach(sticker => {
-    sticker.classList.remove('selected');
-  });
-  
-  // 如果有保存的數據，顯示對應的卡片和內容
-  if (tomorrowData.cardType) {
-    const selectedCard = document.querySelector(`#tomorrow-block2 .card-item[data-card="${tomorrowData.cardType}"]`);
-    if (selectedCard) {
-      selectedCard.classList.add('selected');
-      const textarea = selectedCard.querySelector('textarea');
-      if (textarea) {
-        textarea.style.display = 'block';
-        textarea.value = tomorrowData.text || '';
-        textarea.disabled = true; // 設為唯讀模式
-      }
-    }
-  }
-  
-  // 如果有保存的貼紙，顯示對應的貼紙
-  if (tomorrowData.stickerType) {
-    const stickerTypes = tomorrowData.stickerType.split(',');
-    stickerTypes.forEach(stickerType => {
-      const sticker = document.querySelector(`#tomorrow-block2 .sticker[data-sticker="${stickerType}"]`);
-      if (sticker) {
-        sticker.classList.add('selected');
-      }
-    });
+  } else if (cardListContainer) {
+    // 如果沒有數據，顯示空白提示
+    cardListContainer.innerHTML = '<div class="no-data-message">尚未設定明日期望</div>';
   }
   
   // 設定修改和確認按鈕功能
   setupTomorrowBlock2Buttons(tomorrowData, dateStr);
 }
 
+// 創建 tomorrow-block2 的卡片元素
+function createTomorrowBlock2Card(tomorrowData) {
+  const cardElement = document.createElement('div');
+  cardElement.className = 'card-item selected';
+  cardElement.setAttribute('data-card', tomorrowData.cardType);
+  
+  // 根據卡片類型設定樣式
+  let textareaClass = '';
+  switch (tomorrowData.cardType) {
+    case '1':
+      textareaClass = 'card-textarea-brown';
+      cardElement.style.backgroundColor = '#8B4513'; // 棕色背景
+      break;
+    case '2':
+      textareaClass = 'card-textarea-black';
+      cardElement.style.backgroundColor = '#333333'; // 黑色背景
+      break;
+    case '3':
+      textareaClass = 'card-textarea-white';
+      cardElement.style.backgroundColor = '#FFFFFF'; // 白色背景
+      cardElement.style.border = '2px solid #ddd';
+      break;
+    default:
+      textareaClass = 'card-textarea-brown';
+      cardElement.style.backgroundColor = '#8B4513';
+  }
+  
+  // 設定卡片基本樣式
+  cardElement.style.position = 'relative';
+  cardElement.style.width = '300px';
+  cardElement.style.height = '200px';
+  cardElement.style.borderRadius = '12px';
+  cardElement.style.padding = '20px';
+  cardElement.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+  cardElement.style.margin = '10px auto';
+  
+  // 創建文字區域
+  const textarea = document.createElement('textarea');
+  textarea.className = textareaClass;
+  textarea.value = tomorrowData.text || '';
+  textarea.readOnly = true;
+  textarea.style.display = 'block';
+  textarea.style.width = '100%';
+  textarea.style.height = '100%';
+  textarea.style.border = 'none';
+  textarea.style.background = 'transparent';
+  textarea.style.resize = 'none';
+  textarea.style.outline = 'none';
+  textarea.style.fontSize = '16px';
+  textarea.style.fontFamily = 'inherit';
+  textarea.style.color = tomorrowData.cardType === '3' ? '#333' : '#fff';
+  textarea.placeholder = '明日期望...';
+  
+  cardElement.appendChild(textarea);
+  
+  // 如果有貼紙數據，添加貼紙到卡片上
+  if (tomorrowData.stickerType) {
+    const stickerTypes = tomorrowData.stickerType.includes(',') 
+      ? tomorrowData.stickerType.split(',') 
+      : [tomorrowData.stickerType];
+    
+    stickerTypes.forEach((stickerType, index) => {
+      if (stickerType.trim()) {
+        const stickerImg = document.createElement('img');
+        stickerImg.src = `images/sticker_${getStickerNumber(stickerType.trim())}.png`;
+        stickerImg.style.position = 'absolute';
+        stickerImg.style.width = '40px';
+        stickerImg.style.height = '40px';
+        stickerImg.style.right = `${16 + (index * 50)}px`;
+        stickerImg.style.bottom = '16px';
+        stickerImg.style.zIndex = '10';
+        stickerImg.style.pointerEvents = 'none';
+        cardElement.appendChild(stickerImg);
+      }
+    });
+  }
+  
+  return cardElement;
+}
+
+// 創建 tomorrow-block2 的貼紙元素
+function createTomorrowBlock2Sticker(stickerType) {
+  const stickerElement = document.createElement('img');
+  stickerElement.className = 'sticker selected show';
+  stickerElement.src = `images/sticker_${getStickerNumber(stickerType)}.png`;
+  stickerElement.alt = stickerType;
+  stickerElement.setAttribute('data-sticker', stickerType);
+  stickerElement.style.width = '60px';
+  stickerElement.style.height = '60px';
+  stickerElement.style.margin = '10px';
+  stickerElement.style.opacity = '1';
+  stickerElement.style.transform = 'scale(1.1)';
+  stickerElement.style.pointerEvents = 'none'; // 在顯示模式下不可點擊
+  
+  return stickerElement;
+}
+
 // 設定 tomorrow-block2 的修改和確認按鈕功能
 function setupTomorrowBlock2Buttons(tomorrowData, dateStr) {
-  const editBtn = document.querySelector('#tomorrow-block2 #edit-tomorrow-btn2');
-  const enterBtn = document.querySelector('#tomorrow-block2 #enter-tomorrow-btn2');
+  const editBtn = document.getElementById('edit-tomorrow-btn2');
+  const enterBtn = document.getElementById('enter-tomorrow-btn2');
 
   // 根據是否有數據來設定按鈕狀態
   const hasData = tomorrowData && (tomorrowData.cardType || tomorrowData.stickerType);
   
   if (editBtn) {
     editBtn.disabled = !hasData;
-    editBtn.style.display = hasData ? 'block' : 'none';
+    editBtn.style.display = hasData ? 'inline-block' : 'none';
   }
   
   if (enterBtn) {
     enterBtn.disabled = !hasData;
-    enterBtn.style.display = hasData ? 'block' : 'none';
+    enterBtn.style.display = hasData ? 'inline-block' : 'none';
   }
 
   // 修改按鈕功能 - 進入編輯模式
   if (editBtn) {
     editBtn.onclick = () => {
-      // 啟用編輯模式
-      const textareas = document.querySelectorAll('#tomorrow-block2 textarea');
+      console.log('進入編輯模式');
+      
+      // 啟用文字區域編輯
+      const textareas = document.querySelectorAll('#tomorrow-block2-card-list textarea');
       textareas.forEach(textarea => {
-        textarea.disabled = false;
+        textarea.readOnly = false;
+        textarea.style.cursor = 'text';
+        textarea.style.opacity = '1';
       });
       
-      // 啟用卡片和貼紙選擇
-      const cardItems = document.querySelectorAll('#tomorrow-block2 .card-item');
-      const stickers = document.querySelectorAll('#tomorrow-block2 .sticker');
-      
-      cardItems.forEach(item => {
-        item.style.pointerEvents = 'auto';
-        item.onclick = function() {
-          // 移除其他卡片的選中狀態
-          cardItems.forEach(card => card.classList.remove('selected'));
-          
-          // 選中當前卡片
-          this.classList.add('selected');
-          
-          // 顯示對應的文字輸入框
-          const textarea = this.querySelector('textarea');
-          if (textarea) {
-            textarea.style.display = 'block';
-            textarea.focus();
-            textarea.disabled = false;
-          }
-        };
-      });
-      
+      // 啟用貼紙選擇
+      const stickers = document.querySelectorAll('#tomorrow-block2-sticker-area .sticker');
       stickers.forEach(sticker => {
         sticker.style.pointerEvents = 'auto';
+        sticker.style.cursor = 'pointer';
         sticker.onclick = function() {
           this.classList.toggle('selected');
+          console.log('貼紙選擇狀態:', this.classList.contains('selected'));
         };
       });
       
       // 修改按鈕狀態
       editBtn.textContent = '取消';
       editBtn.onclick = () => {
+        console.log('取消編輯，重新載入數據');
         // 重新載入原始數據
         loadTomorrowData(dateStr);
       };
@@ -1175,18 +1256,25 @@ function setupTomorrowBlock2Buttons(tomorrowData, dateStr) {
       if (enterBtn) {
         enterBtn.textContent = '儲存';
         enterBtn.disabled = false;
-        enterBtn.onclick = () => saveTomorrowData(dateStr);
+        enterBtn.onclick = () => {
+          console.log('儲存明天期望數據');
+          saveTomorrowData(dateStr);
+        };
       }
     };
   }
 
-  // 確認按鈕功能
-  if (enterBtn) {
+  // 確認按鈕功能 - 完成檢視，返回心情日記
+  if (enterBtn && !editBtn.textContent.includes('取消')) {
     enterBtn.onclick = () => {
-      // 如果有數據，返回到心情日記頁面
-      if (hasData) {
-        showPage('mood-of-date');
-      }
+      console.log('完成檢視，返回心情日記');
+      // 返回到心情日記頁面
+      showPage('mood-of-date');
+      // 重新顯示日期選擇器
+      setTimeout(() => {
+        document.getElementById('date-selector').style.display = 'flex';
+        document.getElementById('dairy-subtitle').textContent = '-日期-';
+      }, 100);
     };
   }
 }
@@ -1194,27 +1282,34 @@ function setupTomorrowBlock2Buttons(tomorrowData, dateStr) {
 // 儲存明天期望數據
 async function saveTomorrowData(dateStr) {
   try {
-    // 收集用戶輸入的資料
-    const selectedCard = document.querySelector('#tomorrow-block2 .card-item.selected');
-    const selectedStickers = document.querySelectorAll('#tomorrow-block2 .sticker.selected');
-    
+    // 收集卡片資料
+    const cardElement = document.querySelector('#tomorrow-block2-card-list .card-item');
     let cardType = '';
     let text = '';
     
-    if (selectedCard) {
-      cardType = selectedCard.getAttribute('data-card');
-      const textarea = selectedCard.querySelector('textarea');
+    if (cardElement) {
+      cardType = cardElement.getAttribute('data-card');
+      const textarea = cardElement.querySelector('textarea');
       if (textarea) {
-        text = textarea.value;
+        text = textarea.value.trim();
       }
     }
     
+    // 收集已選擇的貼紙資料
+    const selectedStickers = document.querySelectorAll('#tomorrow-block2-sticker-area .sticker.selected');
     const stickerTypes = Array.from(selectedStickers).map(sticker => 
       sticker.getAttribute('data-sticker')
-    );
+    ).filter(type => type); // 過濾掉空值
+    
+    console.log('儲存資料:', {
+      cardType,
+      text,
+      stickerTypes,
+      dateStr
+    });
 
     // 儲存明日期望資料
-    const response = await fetch('/api/Tomorrow', {
+    const response = await fetch('http://localhost:3000/api/Tomorrow', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1223,7 +1318,8 @@ async function saveTomorrowData(dateStr) {
         cardType,
         text,
         stickerType: stickerTypes.join(','),
-        date: dateStr
+        date: dateStr,
+        user: USER_ID
       })
     });
 
@@ -1240,4 +1336,17 @@ async function saveTomorrowData(dateStr) {
     console.error('儲存失敗:', error);
     alert('儲存失敗，請稍後再試');
   }
+}
+
+// 將貼紙類型轉換為對應的數字
+function getStickerNumber(stickerType) {
+  const stickerMap = {
+    'shining': '1',
+    'heart': '2',
+    'stars_3': '3',
+    'flowers': '4',
+    'stars_2': '5',
+    'butterfly': '6'
+  };
+  return stickerMap[stickerType] || '1';
 }

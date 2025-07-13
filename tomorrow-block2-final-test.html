@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tomorrow Block 2 測試</title>
+    <link href="Feeling_dairy.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Tomorrow Block 2 測試頁面</h1>
+    
+    <div style="margin: 20px; padding: 20px; background: #f5f5f5; border-radius: 8px;">
+        <h2>測試步驟：</h2>
+        <ol>
+            <li>先到主頁面創建一個「明日期望」記錄</li>
+            <li>選擇一張卡片，填寫文字</li>
+            <li>選擇一個或多個貼紙</li>
+            <li>點擊「完成」按鈕儲存</li>
+            <li>然後到「心情日記」頁面</li>
+            <li>選擇相同的日期</li>
+            <li>進入 mood-select2 → today-record2 → tomorrow-block2</li>
+            <li>應該能看到之前儲存的卡片和貼紙</li>
+        </ol>
+    </div>
+    
+    <div style="margin: 20px; padding: 20px; background: #e8f5e8; border-radius: 8px;">
+        <h2>預期行為：</h2>
+        <ul>
+            <li>✅ 顯示已保存的卡片類型（棕色/黑色/白色）</li>
+            <li>✅ 顯示已保存的文字內容</li>
+            <li>✅ 顯示已保存的貼紙元素</li>
+            <li>✅ 修改按鈕可以進入編輯模式</li>
+            <li>✅ 確認按鈕可以完成檢視</li>
+        </ul>
+    </div>
+    
+    <div style="margin: 20px; padding: 20px; background: #fff5f5; border-radius: 8px;">
+        <h2>目前狀態：</h2>
+        <ul>
+            <li>✅ 後端 API 已支援用戶 ID 儲存和檢索</li>
+            <li>✅ 前端 tomorrow-block2 頁面已實現</li>
+            <li>✅ 卡片和貼紙顯示邏輯已完成</li>
+            <li>✅ 修改和確認按鈕功能已實現</li>
+            <li>✅ CSS 樣式已優化</li>
+        </ul>
+    </div>
+    
+    <div style="margin: 20px; text-align: center;">
+        <button onclick="window.location.href='Feeling_dairy.html'" style="padding: 15px 30px; font-size: 18px; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer;">
+            前往主頁面測試
+        </button>
+    </div>
+    
+    <script>
+        // 添加一些測試用的 console.log
+        console.log('Tomorrow Block 2 測試頁面載入完成');
+        console.log('如果你看到這個訊息，代表頁面已正確載入');
+    </script>
+</body>
+</html>

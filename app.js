@@ -115,17 +115,27 @@ const tomorrowSchema = new mongoose.Schema({
     cardType: String,
     text: String,
     stickerType: String,
-    date: String // 新增這行
+    date: String,
+    user: String // 新增 user 字段
 });
 const Tomorrow = mongoose.models.Tomorrow || mongoose.model('Tomorrow', tomorrowSchema);
 
 // 明天期望
 app.post('/api/Tomorrow', async (req, res) => {
-  const { cardType, text, stickerType, date } = req.body; // 加入 date
+  const { cardType, text, stickerType, date, user } = req.body; // 加入 user
   try {
-    const tomorrow = new Tomorrow({ cardType, text, stickerType, date }); // 一起存
-    await tomorrow.save();
-    res.json({ success: true });
+    // 使用 updateOne 與 upsert 選項來更新或創建 Tomorrow 記錄
+    const result = await Tomorrow.updateOne(
+      { date, user }, // 根據日期和用戶查找
+      { $set: { cardType, text, stickerType, date, user } }, // 更新內容
+      { upsert: true } // 如果不存在則創建新記錄
+    );
+    
+    if (result.upsertedCount > 0) {
+      res.json({ success: true, message: '明天期望已創建' });
+    } else {
+      res.json({ success: true, message: '明天期望已更新' });
+    }
   } catch (err) {
     res.json({ success: false, error: err.message });
   }
@@ -133,11 +143,11 @@ app.post('/api/Tomorrow', async (req, res) => {
 
 // 獲取明天期望
 app.get('/api/getTomorrow', async (req, res) => {
-  const { date } = req.query;
+  const { date, user } = req.query;
   if (!date) return res.json({});
   
   try {
-    const tomorrow = await Tomorrow.findOne({ date });
+    const tomorrow = await Tomorrow.findOne({ date, user });
     res.json(tomorrow || {});
   } catch (err) {
     console.error('getTomorrow error:', err);
