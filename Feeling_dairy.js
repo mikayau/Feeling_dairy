@@ -184,14 +184,14 @@ document
     //取得資料
     const date = document.querySelector(".record-date").textContent;
     const weather = document.querySelector(".weather-btn.selected")?.textContent || "";
-    const mood = document.getElementById("mood-slider").value;
+    const moodLevel = document.getElementById("mood-slider").value;
     const content = document.querySelector(".record-textarea").value;
 
     //組成物件
-    const data = { date, weather, mood, content, user: "testUser"  };
+    const data = { date, weather, moodLevel, content, user: "testUser"  };
 
     //test
-    if (!date || !weather || !mood || !content) {
+    if (!date || !weather || !moodLevel || !content) {
       alert("請完整填寫所有欄位！");
       return;
     }
@@ -621,7 +621,7 @@ function showRecordModal(record, dateStr) {
   // 填入資料
   dateElem.textContent = dateStr;
   textarea.value = record?.content || '';
-  slider.value = record?.mood || 1;
+  slider.value = record?.moodLevel || 5;
 
   // 天氣按鈕
   document.querySelectorAll('.weather-btn').forEach(btn => {
@@ -854,13 +854,13 @@ function showTodayRecord2(record, dateStr) {
 
   // 填入心情指數（滑桿）
   const moodSlider = todayRecord2.querySelector('#mood-slider2');
-  if (moodSlider && record && record.mood) {
+  if (moodSlider && record && record.moodLevel) {
     // 如果 record.mood 是心情名稱，需要轉換為數字
-    if (typeof record.mood === 'string' && isNaN(record.mood)) {
+    if (typeof record.moodLevel === 'string' && isNaN(record.moodLevel)) {
       // 心情名稱，使用預設值
       moodSlider.value = 5;
     } else {
-      moodSlider.value = record.mood || 5;
+      moodSlider.value = record.moodLevel || 5;
     }
   }
 
@@ -914,14 +914,14 @@ function setupRecord2Buttons(record, dateStr) {
       // 收集資料
       const date = todayRecord2.querySelector('.record-date').textContent;
       const weather = todayRecord2.querySelector('.weather-btn.selected')?.textContent || '';
-      const mood = todayRecord2.querySelector('.mood-slider').value;
+      const moodLevel = todayRecord2.querySelector('.mood-slider').value;
       const content = todayRecord2.querySelector('.record-textarea').value;
 
       // 組成資料物件
       const data = { 
         date, 
         weather, 
-        mood, 
+        moodLevel, 
         content, 
         user: USER_ID 
       };
