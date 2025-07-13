@@ -569,6 +569,8 @@ body {
 }
 /* 初始灰色（未選） */
 .mood-item {
+  width: 100px; /* 圖片容器寬度保持不變 */
+  height: 100px; /* 圖片容器高度保持不變 */
   display: flex;
   position: relative; /* 相對定位 */
   flex-direction: column; /* 垂直排列 */
@@ -670,9 +672,10 @@ body {
 .mood-item img {
   position: relative;
   z-index: 1; /* 確保圖片在圓形背景上層 */
-  width: 120px; /* 圖片寬度 */ /*test*/
-  height: 120px; /* 圖片高度 */
-  object-fit: cover; /* 圖片填滿容器 */
+  width: 80px; /* 圖片寬度 */ /*test*/
+  height: 80px; /* 圖片高度 */
+  object-fit: contain; /* 圖片填滿容器 */
+  object-position: 80% 80%; /* 圖片位置 */
   border-radius: 50%; /* 圓形圖片 */
   box-shadow: 0 4px 16px #0002; /* 圖片陰影 */
   background: transparent; /* 不要白底 */
@@ -690,26 +693,26 @@ body {
 }
 
 .mood-item[data-mood="開心"] img {
-   background: linear-gradient(90deg, #fffbe9 40%, #ffd6a0 100%);
+   background: linear-gradient(180deg, #ff6767, #ffd1d1);
 }
 /* 興奮：粉紅 */
 .mood-item[data-mood="興奮"] img {
-  background: linear-gradient(90deg, #ffe5f0 40%, #ffb6b9 100%);
+  background: linear-gradient(180deg, #ff9869, #ffd2bd);
 }
 /* 幸福：藍紫 */
 .mood-item[data-mood="幸福"] img {
-  background: linear-gradient(90deg, #e0eaff 40%, #b5c6ff 100%);
+  background: linear-gradient(180deg, #ffda6a, #fff7de);
 }
 .mood-item[data-mood="傷心"] img {
-   background: linear-gradient(90deg, #ffffff 40%, #ffd6a0 100%);
+   background: linear-gradient(180deg, #7cce6b, #d8ffd0);
 }
 /* 興奮：粉紅 */
 .mood-item[data-mood="焦慮"] img {
-  background: linear-gradient(90deg, #ffffff 40%, #ffb6b9 100%);
+  background: linear-gradient(180deg, #84a9ff, #f5f8ff);
 }
 /* 幸福：藍紫 */
 .mood-item[data-mood="生氣"] img {
-  background: linear-gradient(90deg, #ffffff 40%, #b5c6ff 100%);
+  background: linear-gradient(180deg, #f093ff, #fdf1ff);
 }
 
 /* 滑鼠懸停時圖片發光 */
@@ -2228,22 +2231,22 @@ body {
   transform: scale(1.08);
 }
 .date-item.has-mood[data-mood="開心"] {
-  background: linear-gradient(135deg, #fffbe9 60%, #ffd6a0 100%);
+  background: linear-gradient(180deg, #ff6767, #ffd1d1);
 }
 .date-item.has-mood[data-mood="興奮"] {
-  background: linear-gradient(135deg, #ffe5f0 60%, #ffb6b9 100%);
+  background: linear-gradient(180deg, #ff9869, #ffd2bd);
 }
 .date-item.has-mood[data-mood="幸福"] {
-  background: linear-gradient(135deg, #e0eaff 60%, #b5c6ff 100%);
+  background: linear-gradient(180deg, #ffda6a, #fff7de);
 }
 .date-item.has-mood[data-mood="傷心"] {
-  background: linear-gradient(135deg, #424037 60%, #ffd6a0 100%);
+  background: linear-gradient(180deg, #7cce6b, #d8ffd0);
 }
 .date-item.has-mood[data-mood="焦慮"] {
-  background: linear-gradient(135deg, #141eda 60%, #ffb6b9 100%);
+  background: linear-gradient(180deg, #84a9ff, #f5f8ff);
 }
 .date-item.has-mood[data-mood="生氣"] {
-  background: linear-gradient(135deg, #916403 60%, #b5c6ff 100%);
+  background: linear-gradient(180deg, #f093ff, #fdf1ff);
 }
 .year-selector, .month-selector, .date-selector {
   opacity: 1;
