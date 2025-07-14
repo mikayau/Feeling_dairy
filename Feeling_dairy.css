@@ -2379,8 +2379,8 @@ body {
   transform: none !important;
   margin: 15px;
   /* 增大卡片尺寸 */
-  width: 450px !important;
-  height: 300px !important;
+  width: 600px !important;
+  height: 400px !important;
   /* 增強視覺效果 */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   border-radius: 28px;

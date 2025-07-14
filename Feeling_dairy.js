@@ -1596,6 +1596,7 @@ function createTomorrowBlock2Sticker(stickerType) {
   stickerElement.style.opacity = '1';
   stickerElement.style.transform = 'scale(1.1)';
   stickerElement.style.pointerEvents = 'none'; // 在顯示模式下不可點擊
+  stickerElement.style.transition = 'opacity 0.3s, transform 0.3s'; // 添加過渡效果
   
   return stickerElement;
 }
@@ -1629,18 +1630,48 @@ function setupTomorrowBlock2Buttons(tomorrowData, dateStr) {
         textarea.readOnly = false;
         textarea.style.cursor = 'text';
         textarea.style.opacity = '1';
+        textarea.style.border = '2px dashed #ccc'; // 顯示編輯狀態
       });
       
-      // 啟用貼紙選擇
-      const stickers = document.querySelectorAll('#tomorrow-block2-sticker-area .sticker');
-      stickers.forEach(sticker => {
-        sticker.style.pointerEvents = 'auto';
-        sticker.style.cursor = 'pointer';
-        sticker.onclick = function() {
-          this.classList.toggle('selected');
-          console.log('貼紙選擇狀態:', this.classList.contains('selected'));
-        };
-      });
+      // 貼紙區域保持原狀，但添加視覺提示表示可以選擇性修改
+      const stickerArea = document.getElementById('tomorrow-block2-sticker-area');
+      if (stickerArea) {
+        // 添加一個提示文字
+        let editHint = stickerArea.querySelector('.edit-hint');
+        if (!editHint) {
+          editHint = document.createElement('div');
+          editHint.className = 'edit-hint';
+          editHint.textContent = '點擊貼紙可重新選擇（可選）';
+          editHint.style.cssText = `
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+            font-style: italic;
+          `;
+          stickerArea.insertBefore(editHint, stickerArea.firstChild);
+        }
+        
+        // 貼紙啟用點擊功能，但保持原有選擇狀態
+        const stickers = document.querySelectorAll('#tomorrow-block2-sticker-area .sticker');
+        stickers.forEach(sticker => {
+          sticker.style.pointerEvents = 'auto';
+          sticker.style.cursor = 'pointer';
+          sticker.style.opacity = '0.8'; // 稍微降低透明度表示可點擊
+          sticker.onclick = function() {
+            this.classList.toggle('selected');
+            // 更新視覺效果
+            if (this.classList.contains('selected')) {
+              this.style.opacity = '1';
+              this.style.transform = 'scale(1.1)';
+            } else {
+              this.style.opacity = '0.5';
+              this.style.transform = 'scale(1)';
+            }
+            console.log('貼紙選擇狀態:', this.classList.contains('selected'));
+          };
+        });
+      }
       
       // 修改按鈕狀態
       editBtn.textContent = '取消';
@@ -1706,6 +1737,22 @@ async function saveTomorrowData(dateStr) {
       dateStr
     });
 
+    // 如果沒有選擇任何貼紙，保留原有的貼紙（從原始數據中獲取）
+    let finalStickerType = stickerTypes.join(',');
+    if (stickerTypes.length === 0) {
+      // 嘗試從原始數據中獲取貼紙資訊
+      try {
+        const response = await fetch(`http://localhost:3000/api/getTomorrow?date=${dateStr}&user=${USER_ID}`);
+        const originalData = await response.json();
+        if (originalData && originalData.stickerType) {
+          finalStickerType = originalData.stickerType;
+          console.log('保留原有貼紙:', finalStickerType);
+        }
+      } catch (error) {
+        console.log('無法獲取原始貼紙數據，將儲存空值');
+      }
+    }
+
     // 儲存明日期望資料
     const response = await fetch('http://localhost:3000/api/Tomorrow', {
       method: 'POST',
@@ -1715,7 +1762,7 @@ async function saveTomorrowData(dateStr) {
       body: JSON.stringify({
         cardType,
         text,
-        stickerType: stickerTypes.join(','),
+        stickerType: finalStickerType,
         date: dateStr,
         user: USER_ID
       })
