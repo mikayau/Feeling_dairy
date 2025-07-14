@@ -201,6 +201,7 @@ app.get('/api/getRecord', async (req, res) => {
       date: date,
       weather: record?.weather || '',
       mood: mood?.mood || record?.mood || '', // 優先使用 Mood 模型中的心情
+      moodLevel: record?.moodLevel || 5, // 添加 moodLevel 欄位
       content: record?.content || '',
       user: user
     };

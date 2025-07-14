@@ -703,42 +703,115 @@ function getMoodGradient(mood) {
   return getMoodData(mood).gradient;
 }
 
+// 根據 moodLevel 推斷對應的心情名稱
+function getMoodNameFromLevel(moodLevel) {
+  const level = parseInt(moodLevel);
+  // 將 0-10 的數值對應到心情名稱
+  if (level >= 9) return '興奮';
+  if (level >= 7) return '開心'; 
+  if (level >= 6) return '幸福';
+  if (level >= 4) return '焦慮';
+  if (level >= 2) return '傷心';
+  return '生氣';
+}
+
+// 根據心情名稱獲取對應的 moodLevel
+function getLevelFromMoodName(moodName) {
+  switch (moodName) {
+    case '興奮': return 10;
+    case '開心': return 8;
+    case '幸福': return 6;
+    case '焦慮': return 4;
+    case '傷心': return 3;
+    case '生氣': return 1;
+    default: return 5;
+  }
+}
+
 // 更新日期選擇器背景顏色
 function updateDateSelectorColors(year, month) {
   console.log('updateDateSelectorColors - updating for year:', year, 'month:', month);
   
-  // 重新獲取該月的心情數據並更新背景
-  const monthStr = String(month).padStart(2, '0');
-  fetch(`http://localhost:3000/api/month-moods?year=${year}&month=${monthStr}`)
-    .then(res => {
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return res.json();
-    })
-    .then(moodData => {
-      console.log('updateDateSelectorColors - received mood data:', moodData);
-      
-      // 更新所有日期元素的背景
-      const dateItems = document.querySelectorAll('.date-item');
-      dateItems.forEach(item => {
-        const day = parseInt(item.textContent);
-        const moodEntry = moodData.find(entry => entry.date === day);
-        
-        // 移除現有的心情類別
-        item.classList.remove('has-mood');
-        item.removeAttribute('data-mood');
-        
-        if (moodEntry && moodEntry.mood) {
-          item.classList.add('has-mood');
-          item.setAttribute('data-mood', moodEntry.mood);
-          console.log(`updateDateSelectorColors - updated day ${day} with mood: ${moodEntry.mood}`);
+  // 返回 Promise 讓調用者知道更新何時完成
+  return new Promise((resolve, reject) => {
+    // 重新獲取該月的心情數據並更新背景
+    const monthStr = String(month).padStart(2, '0');
+    fetch(`http://localhost:3000/api/month-moods?year=${year}&month=${monthStr}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
         }
+        return res.json();
+      })
+      .then(moodData => {
+        console.log('updateDateSelectorColors - received mood data:', moodData);
+        
+        // 更新所有日期元素的背景
+        const dateItems = document.querySelectorAll('.date-item');
+        dateItems.forEach((item, index) => {
+          const day = index + 1; // 使用索引來確定日期，因為 textContent 可能包含圖片等其他內容
+          const moodEntry = moodData.find(entry => entry.date === day);
+          
+          // 移除現有的心情類別
+          item.classList.remove('has-mood');
+          item.removeAttribute('data-mood');
+          
+          if (moodEntry && moodEntry.mood) {
+            // 有心情記錄，重建日期項目結構
+            item.classList.add('has-mood');
+            item.setAttribute('data-mood', moodEntry.mood);
+            
+            // 清空內容並重建
+            item.innerHTML = '';
+            
+            // 創建心情圖片
+            const img = document.createElement('img');
+            img.src = getMoodImg(moodEntry.mood);
+            img.alt = moodEntry.mood;
+            img.style.width = '40px';
+            img.style.height = '40px';
+            img.style.display = 'block';
+            img.style.margin = '0 auto 4px auto';
+            item.appendChild(img);
+            
+            // 創建日期數字
+            const num = document.createElement('div');
+            num.textContent = day;
+            num.style.fontSize = '14px';
+            num.style.color = '#64574c';
+            item.appendChild(num);
+            
+            console.log(`updateDateSelectorColors - updated day ${day} with mood: ${moodEntry.mood}`);
+          } else {
+            // 沒有心情記錄，只顯示日期數字
+            item.innerHTML = '';
+            item.textContent = day;
+          }
+          
+          // 重新綁定點擊事件
+          item.onclick = () => {
+            const dateStr = `${String(day).padStart(2, '0')}-${String(month).padStart(2, '0')}-${year}`;
+            // 發送請求取得該天記錄
+            fetch(`http://localhost:3000/api/getRecord?date=${dateStr}&user=${USER_ID}`)
+              .then(res => res.json())
+              .then(record => {
+                // 顯示記錄內容
+                showMoodSelect(record, dateStr);
+              })
+              .catch(error => {
+                console.error('Error fetching record:', error);
+              });
+          };
+        });
+        
+        console.log('updateDateSelectorColors - update completed');
+        resolve(); // 更新完成
+      })
+      .catch(error => {
+        console.error('updateDateSelectorColors - error:', error);
+        reject(error);
       });
-    })
-    .catch(error => {
-      console.error('updateDateSelectorColors - error:', error);
-    });
+  });
 }
 
 // 動畫切換函式
@@ -833,7 +906,12 @@ function showMoodSelect(record, dateStr) {
       if (!record) record = {};
       record.mood = newMood;
       
+      // 根據心情名稱推斷對應的 moodLevel
+      const inferredMoodLevel = getLevelFromMoodName(newMood);
+      record.moodLevel = inferredMoodLevel;
+      
       console.log('mood-select2 - saving mood:', newMood, 'for date:', dateStr);
+      console.log('inferred moodLevel from mood', newMood, ':', inferredMoodLevel);
       console.log('record object:', record);
       console.log('USER_ID:', USER_ID);
       
@@ -848,6 +926,7 @@ function showMoodSelect(record, dateStr) {
       const recordData = {
         ...record,
         mood: newMood,
+        moodLevel: inferredMoodLevel, // 添加 moodLevel
         date: dateStr,
         user: USER_ID
       };
@@ -885,22 +964,41 @@ function showMoodSelect(record, dateStr) {
       })
       .then(recordResult => {
         console.log('mood-select2 - record saved:', recordResult);
-        alert('心情已更新！');
         
         // 更新 currentRecord
         currentRecord = { ...currentRecord, mood: newMood };
         
-        // 回到檢視模式
-        showMoodSelect(currentRecord, dateStr);
-        document.getElementById('enter-mood-btn').disabled = true;
-        
-        // 更新日期選擇器背景顏色
+        // 更新日期選擇器背景顏色，然後顯示成功訊息
         if (dateStr) {
           const dateMatch = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
           if (dateMatch) {
             const [, day, month, year] = dateMatch;
-            updateDateSelectorColors(parseInt(year), parseInt(month));
+            // 等待更新完成後再顯示成功訊息
+            updateDateSelectorColors(parseInt(year), parseInt(month))
+              .then(() => {
+                alert('心情已更新！');
+                // 回到檢視模式
+                showMoodSelect(currentRecord, dateStr);
+                document.getElementById('enter-mood-btn').disabled = true;
+              })
+              .catch(error => {
+                console.error('Date selector update error:', error);
+                // 即使更新失敗，也要顯示成功訊息和回到檢視模式
+                alert('心情已更新！');
+                showMoodSelect(currentRecord, dateStr);
+                document.getElementById('enter-mood-btn').disabled = true;
+              });
+          } else {
+            // 如果日期格式不正確，直接顯示成功訊息
+            alert('心情已更新！');
+            showMoodSelect(currentRecord, dateStr);
+            document.getElementById('enter-mood-btn').disabled = true;
           }
+        } else {
+          // 如果沒有 dateStr，直接顯示成功訊息
+          alert('心情已更新！');
+          showMoodSelect(currentRecord, dateStr);
+          document.getElementById('enter-mood-btn').disabled = true;
         }
       })
       .catch(error => {
@@ -1092,46 +1190,98 @@ function setupRecord2Buttons(record, dateStr) {
       console.log('USER_ID:', USER_ID);
 
       // 組成資料物件
+      const parsedMoodLevel = parseInt(moodLevel);
+      const inferredMood = getMoodNameFromLevel(parsedMoodLevel);
+      
       const data = { 
         date, 
         weather, 
-        moodLevel: parseInt(moodLevel), // 確保是數字
+        moodLevel: parsedMoodLevel, // 確保是數字
         content, 
-        user: USER_ID 
+        user: USER_ID,
+        mood: inferredMood // 根據 moodLevel 推斷心情名稱
       };
 
       console.log('record2 saving data:', data);
+      console.log('inferred mood from level', parsedMoodLevel, ':', inferredMood);
 
-      // 發送到後端
-      fetch('http://localhost:3000/api/saveRecord', {
+      // 首先更新 Mood 模型
+      const moodData = {
+        user: USER_ID,
+        mood: inferredMood,
+        date: date,
+        time: new Date().toISOString()
+      };
+
+      fetch('http://localhost:3000/api/submit-mood', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(moodData),
       })
       .then(res => {
         if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+          throw new Error(`Mood API error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(moodResult => {
+        console.log('record2 - mood saved:', moodResult);
+        
+        // 然後更新 Record 模型
+        return fetch('http://localhost:3000/api/saveRecord', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Record API error! status: ${res.status}`);
         }
         return res.json();
       })
       .then(result => {
+        console.log('record2 - record saved:', result);
+        
         if (result.success !== false) {
-          alert('記錄已更新！');
-          // 退出編輯模式
-          setRecord2Editable(false);
-          editBtn.disabled = false;
-          confirmBtn.disabled = true;
-          
           // 更新 currentRecord
           currentRecord = { ...currentRecord, ...data };
           
-          // 更新日期選擇器的背景顏色
+          // 更新日期選擇器的背景顏色，然後顯示成功訊息
           if (currentDateStr) {
             const dateMatch = currentDateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
             if (dateMatch) {
               const [, day, month, year] = dateMatch;
-              updateDateSelectorColors(parseInt(year), parseInt(month));
+              // 等待更新完成後再顯示成功訊息
+              updateDateSelectorColors(parseInt(year), parseInt(month))
+                .then(() => {
+                  alert('記錄已更新！');
+                  // 退出編輯模式
+                  setRecord2Editable(false);
+                  editBtn.disabled = false;
+                  confirmBtn.disabled = true;
+                })
+                .catch(error => {
+                  console.error('Date selector update error:', error);
+                  // 即使更新失敗，也要顯示成功訊息和退出編輯模式
+                  alert('記錄已更新！');
+                  setRecord2Editable(false);
+                  editBtn.disabled = false;
+                  confirmBtn.disabled = true;
+                });
+            } else {
+              // 如果日期格式不正確，直接顯示成功訊息
+              alert('記錄已更新！');
+              setRecord2Editable(false);
+              editBtn.disabled = false;
+              confirmBtn.disabled = true;
             }
+          } else {
+            // 如果沒有 currentDateStr，直接顯示成功訊息
+            alert('記錄已更新！');
+            setRecord2Editable(false);
+            editBtn.disabled = false;
+            confirmBtn.disabled = true;
           }
         } else {
           alert('儲存失敗，請稍後再試');
