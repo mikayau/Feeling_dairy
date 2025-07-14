@@ -184,11 +184,12 @@ document
     //取得資料
     const date = document.querySelector(".record-date").textContent;
     const weather = document.querySelector(".weather-btn.selected")?.textContent || "";
-    const moodLevel = document.getElementById("mood-slider").value;
+    const moodSlider = document.getElementById("mood-slider");
+    const moodLevel = moodSlider ? moodSlider.value : '5';
     const content = document.querySelector(".record-textarea").value;
 
     //組成物件
-    const data = { date, weather, moodLevel, content, user: "testUser"  };
+    const data = { date, weather, moodLevel: parseInt(moodLevel), content, user: "testUser"  };
 
     //test
     if (!date || !weather || !moodLevel || !content) {
@@ -702,6 +703,44 @@ function getMoodGradient(mood) {
   return getMoodData(mood).gradient;
 }
 
+// 更新日期選擇器背景顏色
+function updateDateSelectorColors(year, month) {
+  console.log('updateDateSelectorColors - updating for year:', year, 'month:', month);
+  
+  // 重新獲取該月的心情數據並更新背景
+  const monthStr = String(month).padStart(2, '0');
+  fetch(`http://localhost:3000/api/month-moods?year=${year}&month=${monthStr}`)
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(moodData => {
+      console.log('updateDateSelectorColors - received mood data:', moodData);
+      
+      // 更新所有日期元素的背景
+      const dateItems = document.querySelectorAll('.date-item');
+      dateItems.forEach(item => {
+        const day = parseInt(item.textContent);
+        const moodEntry = moodData.find(entry => entry.date === day);
+        
+        // 移除現有的心情類別
+        item.classList.remove('has-mood');
+        item.removeAttribute('data-mood');
+        
+        if (moodEntry && moodEntry.mood) {
+          item.classList.add('has-mood');
+          item.setAttribute('data-mood', moodEntry.mood);
+          console.log(`updateDateSelectorColors - updated day ${day} with mood: ${moodEntry.mood}`);
+        }
+      });
+    })
+    .catch(error => {
+      console.error('updateDateSelectorColors - error:', error);
+    });
+}
+
 // 動畫切換函式
 function switchSelector(showId) {
   ['year-selector', 'month-selector', 'date-selector'].forEach(id => {
@@ -782,19 +821,99 @@ function showMoodSelect(record, dateStr) {
 
   // 點擊「確認」才送出修改
   document.getElementById('enter-mood-btn').onclick = () => {
+    console.log('enter-mood-btn clicked');
     const selected = moodSelect2.querySelector('.mood-item.selected');
+    console.log('selected mood item:', selected);
+    
     if (selected) {
-      record.mood = selected.dataset.mood;
-      // 送出到後端
-      fetch('http://localhost:3000/api/saveRecord', {
+      const newMood = selected.dataset.mood;
+      console.log('newMood:', newMood);
+      
+      // 更新 record 物件
+      if (!record) record = {};
+      record.mood = newMood;
+      
+      console.log('mood-select2 - saving mood:', newMood, 'for date:', dateStr);
+      console.log('record object:', record);
+      console.log('USER_ID:', USER_ID);
+      
+      // 同時發送到 Mood 和 Record API
+      const moodData = {
+        user: USER_ID,
+        mood: newMood,
+        date: dateStr,
+        time: new Date().toISOString()
+      };
+      
+      const recordData = {
+        ...record,
+        mood: newMood,
+        date: dateStr,
+        user: USER_ID
+      };
+      
+      console.log('moodData to send:', moodData);
+      console.log('recordData to send:', recordData);
+      
+      // 發送心情資料到 Mood API
+      fetch('http://localhost:3000/api/submit-mood', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...record, date: dateStr, user: USER_ID }),
-      }).then(() => {
+        body: JSON.stringify(moodData),
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Mood API error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(moodResult => {
+        console.log('mood-select2 - mood saved:', moodResult);
+        
+        // 同時更新 Record
+        return fetch('http://localhost:3000/api/saveRecord', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(recordData),
+        });
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`Record API error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(recordResult => {
+        console.log('mood-select2 - record saved:', recordResult);
+        alert('心情已更新！');
+        
+        // 更新 currentRecord
+        currentRecord = { ...currentRecord, mood: newMood };
+        
         // 回到檢視模式
-        showMoodSelect(record, dateStr);
+        showMoodSelect(currentRecord, dateStr);
         document.getElementById('enter-mood-btn').disabled = true;
+        
+        // 更新日期選擇器背景顏色
+        if (dateStr) {
+          const dateMatch = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+          if (dateMatch) {
+            const [, day, month, year] = dateMatch;
+            updateDateSelectorColors(parseInt(year), parseInt(month));
+          }
+        }
+      })
+      .catch(error => {
+        console.error('mood-select2 save error:', error);
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+        alert(`儲存失敗：${error.message}\n請檢查網路連線和控制台錯誤訊息`);
       });
+    } else {
+      alert('請先選擇心情');
     }
   };
 
@@ -823,6 +942,39 @@ function showMoodSelect(record, dateStr) {
 function showTodayRecord2(record, dateStr) {
   console.log('showTodayRecord2 - record:', record);
   console.log('showTodayRecord2 - dateStr:', dateStr);
+
+  // 如果沒有 record 或 record 不完整，重新獲取數據
+  if (!record || (!record.moodLevel && !record.content && !record.weather)) {
+    console.log('showTodayRecord2 - incomplete record, fetching from API');
+    fetch(`http://localhost:3000/api/getRecord?date=${dateStr}&user=${USER_ID}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(fetchedRecord => {
+        console.log('showTodayRecord2 - fetched record:', fetchedRecord);
+        // 更新 currentRecord
+        currentRecord = fetchedRecord;
+        // 遞迴調用自己，這次有完整數據
+        showTodayRecord2(fetchedRecord, dateStr);
+      })
+      .catch(error => {
+        console.error('showTodayRecord2 - fetch error:', error);
+        // 即使獲取失敗，也顯示頁面（使用空數據）
+        showTodayRecord2Internal({}, dateStr);
+      });
+    return;
+  }
+
+  showTodayRecord2Internal(record, dateStr);
+}
+
+// 內部實現函數
+function showTodayRecord2Internal(record, dateStr) {
+  console.log('showTodayRecord2Internal - record:', record);
+  console.log('showTodayRecord2Internal - dateStr:', dateStr);
 
   // 隱藏其他所有區塊
   document.getElementById('main-menu').style.display = 'none';
@@ -854,14 +1006,30 @@ function showTodayRecord2(record, dateStr) {
 
   // 填入心情指數（滑桿）
   const moodSlider = todayRecord2.querySelector('#mood-slider2');
-  if (moodSlider && record && record.moodLevel) {
-    // 如果 record.mood 是心情名稱，需要轉換為數字
-    if (typeof record.moodLevel === 'string' && isNaN(record.moodLevel)) {
-      // 心情名稱，使用預設值
-      moodSlider.value = 5;
-    } else {
-      moodSlider.value = record.moodLevel || 5;
+  if (moodSlider) {
+    let sliderValue = 5; // 預設值
+    
+    // 修復：檢查 record 和 record.moodLevel 是否存在
+    if (record && record.moodLevel !== undefined && record.moodLevel !== null) {
+      // 確保是數字
+      const parsedValue = parseInt(record.moodLevel);
+      if (!isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 10) {
+        sliderValue = parsedValue;
+      }
     }
+    
+    console.log('showTodayRecord2Internal - 設定滑桿值:', sliderValue);
+    console.log('showTodayRecord2Internal - record.moodLevel:', record?.moodLevel);
+    moodSlider.value = sliderValue;
+    
+    // 立即更新貓咪位置
+    setupRecord2CatAnimation();
+    
+    // 等待一小段時間後再觸發滑桿更新
+    setTimeout(() => {
+      const event = new Event('input', { bubbles: true });
+      moodSlider.dispatchEvent(event);
+    }, 50);
   }
 
   // 填入內容
@@ -911,22 +1079,28 @@ function setupRecord2Buttons(record, dateStr) {
   // 確認按鈕點擊事件
   if (confirmBtn) {
     confirmBtn.onclick = () => {
+      console.log('record2 confirm button clicked');
+      
       // 收集資料
       const date = todayRecord2.querySelector('.record-date').textContent;
       const weather = todayRecord2.querySelector('.weather-btn.selected')?.textContent || '';
-      const moodLevel = todayRecord2.querySelector('.mood-slider').value;
+      const moodSlider = todayRecord2.querySelector('#mood-slider2');
+      const moodLevel = moodSlider ? moodSlider.value : '5';
       const content = todayRecord2.querySelector('.record-textarea').value;
+
+      console.log('record2 collected data:', { date, weather, moodLevel, content });
+      console.log('USER_ID:', USER_ID);
 
       // 組成資料物件
       const data = { 
         date, 
         weather, 
-        moodLevel, 
+        moodLevel: parseInt(moodLevel), // 確保是數字
         content, 
         user: USER_ID 
       };
 
-      console.log('saving record2 data:', data);
+      console.log('record2 saving data:', data);
 
       // 發送到後端
       fetch('http://localhost:3000/api/saveRecord', {
@@ -934,7 +1108,12 @@ function setupRecord2Buttons(record, dateStr) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(result => {
         if (result.success !== false) {
           alert('記錄已更新！');
@@ -945,13 +1124,27 @@ function setupRecord2Buttons(record, dateStr) {
           
           // 更新 currentRecord
           currentRecord = { ...currentRecord, ...data };
+          
+          // 更新日期選擇器的背景顏色
+          if (currentDateStr) {
+            const dateMatch = currentDateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+            if (dateMatch) {
+              const [, day, month, year] = dateMatch;
+              updateDateSelectorColors(parseInt(year), parseInt(month));
+            }
+          }
         } else {
           alert('儲存失敗，請稍後再試');
         }
       })
       .catch(err => {
         console.error('Save error:', err);
-        alert('儲存失敗，請檢查網路連線');
+        console.error('Error details:', {
+          message: err.message,
+          stack: err.stack,
+          name: err.name
+        });
+        alert(`儲存失敗：${err.message}\n請檢查網路連線和控制台錯誤訊息`);
       });
     };
   }
@@ -969,7 +1162,7 @@ function setRecord2Editable(editable) {
   });
 
   // 心情滑桿
-  const moodSlider = todayRecord2.querySelector('.mood-slider');
+  const moodSlider = todayRecord2.querySelector('#mood-slider2');
   if (moodSlider) {
     moodSlider.disabled = !editable;
     moodSlider.style.opacity = editable ? '1' : '0.7';

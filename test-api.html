@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API 測試</title>
+</head>
+<body>
+    <h1>API 測試頁面</h1>
+    <button onclick="testSaveRecord()">測試 saveRecord API</button>
+    <button onclick="testSubmitMood()">測試 submit-mood API</button>
+    <div id="results"></div>
+
+    <script>
+        async function testSaveRecord() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>測試 saveRecord API...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/saveRecord', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        date: "14-07-2025",
+                        weather: "晴",
+                        moodLevel: 5,
+                        content: "測試內容",
+                        user: "testUser"
+                    })
+                });
+                
+                const data = await response.json();
+                results.innerHTML += `<p>saveRecord 結果: ${JSON.stringify(data)}</p>`;
+            } catch (error) {
+                results.innerHTML += `<p>saveRecord 錯誤: ${error.message}</p>`;
+                console.error('saveRecord error:', error);
+            }
+        }
+
+        async function testSubmitMood() {
+            const results = document.getElementById('results');
+            results.innerHTML += '<p>測試 submit-mood API...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/submit-mood', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user: "testUser",
+                        mood: "開心",
+                        date: "14-07-2025"
+                    })
+                });
+                
+                const data = await response.json();
+                results.innerHTML += `<p>submit-mood 結果: ${JSON.stringify(data)}</p>`;
+            } catch (error) {
+                results.innerHTML += `<p>submit-mood 錯誤: ${error.message}</p>`;
+                console.error('submit-mood error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

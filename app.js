@@ -77,30 +77,37 @@ app.get('/', (req, res) => {
 const recordSchema = new mongoose.Schema({
     date: String,
     weather: String,
-    mood: String,
-    content: String
+    moodLevel: Number,    // 新增 moodLevel 欄位
+    content: String, // 新增 content 欄位
+    user: String          // 也新增 user 欄位
 });
 const Record = mongoose.models.Record || mongoose.model('Record', recordSchema);
 
 // 今日記錄
 app.post('/api/saveRecord', async (req, res) => {
     try {
-        const { date, weather, mood, content, user } = req.body;
+        const { date, weather, moodLevel, content, user, mood } = req.body;
+        
+        console.log('saveRecord received:', { date, weather, moodLevel, content, user, mood });
         
         // 更新或創建 Record
+        const recordData = { date, weather, moodLevel, content, user };
         await Record.updateOne(
             { date },
-            { $set: { date, weather, mood, content } },
+            { $set: recordData },
             { upsert: true }
         );
+        
+        console.log('Record updated successfully');
         
         // 如果有 mood 和 user，也要更新 Mood 模型
         if (mood && user) {
             await Mood.updateOne(
                 { date, user },
-                { $set: { date, user, mood, time: new Date() } },
+                { $set: { mood, time: new Date() } },
                 { upsert: true }
             );
+            console.log('Mood updated successfully');
         }
         
         res.json({ success: true });
