@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡片顯示測試</title>
+    <link href="Feeling_dairy.css" rel="stylesheet" />
+    <style>
+        /* 基本響應式設定 */
+        html {
+            font-size: 16px; /* 基準字體大小 */
+        }
+        
+        body { 
+            padding: 1rem; 
+            background: #ffe5cf; 
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .test-container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 1rem;
+        }
+        
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 2px solid #d4a574;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* 按鈕響應式 */
+        button {
+            padding: 0.5rem 1rem;
+            margin: 0.25rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            background: #d4a574;
+            color: white;
+            cursor: pointer;
+            min-width: 80px;
+        }
+        
+        button:hover {
+            background: #b8955f;
+        }
+        
+        /* 平板尺寸 */
+        @media screen and (max-width: 1024px) {
+            html {
+                font-size: 14px;
+            }
+            
+            .test-container {
+                max-width: 95vw;
+                padding: 0.8rem;
+            }
+            
+            .test-section {
+                margin: 1.5rem 0;
+                padding: 0.8rem;
+            }
+        }
+        
+        /* 手機尺寸 */
+        @media screen and (max-width: 768px) {
+            html {
+                font-size: 12px;
+            }
+            
+            body {
+                padding: 0.5rem;
+            }
+            
+            .test-container {
+                max-width: 100vw;
+                padding: 0.5rem;
+            }
+            
+            .test-section {
+                margin: 1rem 0;
+                padding: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+                min-width: 60px;
+            }
+        }
+        
+        /* 小手機尺寸 */
+        @media screen and (max-width: 480px) {
+            html {
+                font-size: 10px;
+            }
+            
+            body {
+                padding: 0.3rem;
+            }
+            
+            .test-container {
+                padding: 0.3rem;
+            }
+            
+            .test-section {
+                margin: 0.8rem 0;
+                padding: 0.3rem;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            h2 {
+                font-size: 1rem;
+            }
+            
+            button {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.8rem;
+                min-width: 50px;
+                margin: 0.2rem;
+            }
+        }
+        
+        /* 橫向模式優化 */
+        @media screen and (orientation: landscape) and (max-width: 768px) {
+            html {
+                font-size: 12px;
+            }
+            
+            body {
+                padding: 0.5rem;
+            }
+            
+            .test-container {
+                max-width: 95vw;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+            
+            .test-section {
+                margin: 0.8rem 0;
+                padding: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            h2 {
+                font-size: 1rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        /* 確保卡片元素也響應式 */
+        .tomorrow-container {
+            max-width: 100%;
+            overflow: hidden;
+        }
+        
+        .card-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .card-item {
+            flex: 0 1 auto;
+            max-width: 300px;
+            min-width: 200px;
+        }
+        
+        .sticker-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+            gap: 0.5rem;
+            max-width: 100%;
+        }
+        
+        .sticker {
+            width: 100%;
+            height: auto;
+            max-width: 80px;
+        }
+        
+        /* 手機版卡片優化 */
+        @media screen and (max-width: 768px) {
+            .card-list {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            .card-item {
+                max-width: 90%;
+                min-width: 250px;
+            }
+            
+            .sticker-area {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 0.3rem;
+            }
+            
+            .sticker {
+                max-width: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1>tomorrow-block2 卡片顯示測試</h1>
+        
+        <div class="test-section">
+            <h2>模擬 tomorrow-block2 卡片顯示</h2>
+            <div class="tomorrow-container">
+                <div class="tomorrow-title">明日期望</div>
+                <div class="choose-cards">請選擇喜歡的卡片</div>
+                
+                <!-- 卡片 -->
+                <div class="card-list">
+                    <div class="card-item" data-card="1">
+                        <textarea class="card-textarea-brown" placeholder="寫下你的期望..." 
+                                style="display:none">測試內容：我希望明天是美好的一天！</textarea>
+                    </div>
+                    <div class="card-item" data-card="2">
+                        <textarea class="card-textarea-black" placeholder="寫下你的期望..." 
+                                style="display:none">測試內容：希望能完成所有任務。</textarea>
+                    </div>
+                    <div class="card-item" data-card="3">
+                        <textarea class="card-textarea-white" placeholder="寫下你的期望..." 
+                                style="display:none">測試內容：期待新的挑戰！</textarea>
+                    </div>
+                </div>
+                
+                <div class="sticker-container">
+                    <div class="choose-stickers">可以選擇喜歡的貼紙元素添加</div>
+                    <div class="sticker-area">
+                        <img src="images/sticker_1.png" class="sticker selected" data-sticker="shining">
+                        <img src="images/sticker_2.png" class="sticker selected" data-sticker="heart">
+                        <img src="images/sticker_3.png" class="sticker" data-sticker="stars_3">
+                        <img src="images/sticker_4.png" class="sticker" data-sticker="flowers">
+                        <img src="images/sticker_5.png" class="sticker" data-sticker="stars_2">
+                        <img src="images/sticker_6.png" class="sticker" data-sticker="butterfly">
+                    </div>
+                    <div class="button-group">
+                        <button id="edit-tomorrow-btn2">修改</button>
+                        <button id="enter-tomorrow-btn2">確認</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>測試按鈕</h2>
+            <div class="button-group">
+                <button onclick="showCard(1)">顯示卡片 1</button>
+                <button onclick="showCard(2)">顯示卡片 2</button>
+                <button onclick="showCard(3)">顯示卡片 3</button>
+                <button onclick="showAllCards()">顯示所有卡片</button>
+                <button onclick="hideAllCards()">隱藏所有卡片</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ...existing code...
+        // 模擬 tomorrow-block2 的樣式
+        document.querySelector('.tomorrow-container').parentElement.className = 'tomorrow-block2';
+        
+        function showCard(cardNumber) {
+            // 清除所有選中狀態
+            const cards = document.querySelectorAll('.card-item');
+            cards.forEach(card => {
+                card.classList.remove('selected');
+                const textarea = card.querySelector('textarea');
+                if (textarea) textarea.style.display = 'none';
+            });
+            
+            // 顯示指定卡片
+            const selectedCard = document.querySelector(`[data-card="${cardNumber}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                const textarea = selectedCard.querySelector('textarea');
+                if (textarea) textarea.style.display = 'block';
+            }
+        }
+        
+        function showAllCards() {
+            const cards = document.querySelectorAll('.card-item');
+            cards.forEach(card => {
+                card.style.display = 'block';
+                card.style.opacity = '1';
+            });
+        }
+        
+        function hideAllCards() {
+            const cards = document.querySelectorAll('.card-item');
+            cards.forEach(card => {
+                card.style.display = 'none';
+            });
+        }
+        
+        // 初始化：顯示所有卡片，選中卡片1
+        window.onload = function() {
+            showAllCards();
+            showCard(1);
+        };
+    </script>
+</body>
+</html>

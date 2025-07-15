@@ -6,11 +6,101 @@
   font-family: CatWord;
   src: url(fonts/CatWord.ttf);
 }
-/* 橫向模式檢測 */
+
+/* 基本響應式設定 - 所有元素縮小到0.7倍 */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; /* 基準字體大小 */
+}
+
+body {
+  transform: scale(0.7);
+  transform-origin: top left;
+  width: 142.86%; /* 100% / 0.7 */
+  height: 142.86%; /* 100% / 0.7 */
+  overflow-x: hidden;
+}
+
+/* 桌面版 (1024px以上) - 保持0.7倍縮放 */
+@media screen and (min-width: 1024px) {
+  body {
+    transform: scale(0.7);
+    transform-origin: top left;
+    width: 142.86%;
+    height: 142.86%;
+  }
+  
+  html {
+    font-size: 16px;
+  }
+}
+
+/* 平板版 (768px-1024px) - 縮放到0.6倍 */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  body {
+    transform: scale(0.6);
+    transform-origin: top left;
+    width: 166.67%; /* 100% / 0.6 */
+    height: 166.67%;
+  }
+  
+  html {
+    font-size: 14px;
+  }
+}
+
+/* 手機版 (480px-768px) - 縮放到0.5倍 */
+@media screen and (min-width: 480px) and (max-width: 767px) {
+  body {
+    transform: scale(0.5);
+    transform-origin: top left;
+    width: 200%; /* 100% / 0.5 */
+    height: 200%;
+  }
+  
+  html {
+    font-size: 12px;
+  }
+}
+
+/* 小手機版 (480px以下) - 縮放到0.4倍 */
+@media screen and (max-width: 479px) {
+  body {
+    transform: scale(0.4);
+    transform-origin: top left;
+    width: 250%; /* 100% / 0.4 */
+    height: 250%;
+  }
+  
+  html {
+    font-size: 10px;
+  }
+}
+
+/* 確保所有容器都能適應縮放 */
+.cover, .main-menu, .mood-select, .mood-select2, 
+.today-record, .tomorrow-block, .tomorrow-block2, .mood-of-date {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 圖片響應式 */
+img {
+  max-width: 100%;
+  height: auto;
+}
+/* 橫向模式檢測 - 針對不同設備優化 */
 @media screen and (orientation: landscape) {
   /* 橫向模式的通用樣式 */
   body {
-    overflow-x: hidden; /* 防止橫向滾動 */
+    overflow-x: hidden;
   }
   
   /* 調整字體大小 */
@@ -19,20 +109,25 @@
   }
 }
 
-/* 手機橫向模式 */
-@media screen and (max-width: 768px) and (orientation: landscape) {
+/* 桌面橫向模式 */
+@media screen and (min-width: 1024px) and (orientation: landscape) {
   body {
-    zoom: 0.1; /* 橫向時稍微縮小 */
+    transform: scale(0.7);
+    transform-origin: top left;
+    width: 142.86%;
+    height: 142.86%;
+  }
+}
+
+/* 平板橫向模式 */
+@media screen and (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+  body {
+    transform: scale(0.55);
+    transform-origin: top left;
+    width: 181.82%; /* 100% / 0.55 */
+    height: 181.82%;
   }
   
-  /* 調整容器高度 */
-  .cover, .main-menu, .mood-select, .mood-select2, 
-  .today-record, .tomorrow-block, .mood-of-date {
-    height: 100vh;
-    min-height: 480px; /* 最小高度確保內容可見 */
-  }
-  
-  /* 調整標題大小 */
   .feeling-title {
     font-size: 120px !important;
   }
@@ -42,86 +137,159 @@
   }
 }
 
-/* 平板橫向模式 */
-@media screen and (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+/* 手機橫向模式 */
+@media screen and (max-width: 767px) and (orientation: landscape) {
   body {
-    zoom: 0.85;
+    transform: scale(0.45);
+    transform-origin: top left;
+    width: 222.22%; /* 100% / 0.45 */
+    height: 222.22%;
   }
+  
+  /* 調整容器高度 */
+  .cover, .main-menu, .mood-select, .mood-select2, 
+  .today-record, .tomorrow-block, .mood-of-date {
+    height: 100vh;
+    min-height: 480px;
+  }
+  
+  /* 調整標題大小 */
   .feeling-title {
-    margin-top: 20px;
-
+    font-size: 100px !important;
   }
+  
   .subtitle {
-    margin-top: 0px;
-
+    font-size: 28px !important;
   }
 }
-/* 心情選擇頁面橫向優化 */
+/* 心情選擇頁面響應式優化 */
 @media screen and (orientation: landscape) {
   .mood-list {
-    flex-wrap: wrap; /* 允許換行 */
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 24px; /* 減少間距 */
-    margin-bottom: 40px;
+    gap: 20px;
+    margin-bottom: 30px;
   }
   
   .mood-item {
-    width: 80px; /* 稍微縮小 */
-    height: 80px;
+    width: 70px;
+    height: 70px;
   }
   
   .mood-item img {
-    width: 64px;
-    height: 64px;
+    width: 56px;
+    height: 56px;
   }
   
   .mood-label {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 
-/* 記錄頁面橫向優化 */
+/* 手機版心情選擇優化 */
+@media screen and (max-width: 767px) {
+  .mood-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .mood-item {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .mood-item img {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .mood-label {
+    font-size: 10px;
+  }
+}
+
+/* 記錄頁面響應式優化 */
 @media screen and (orientation: landscape) {
   .record-content-row {
-    flex-direction: row; /* 保持水平排列 */
-    gap: 32px;
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
     align-items: flex-start;
+    justify-content: center;
   }
   
   .record-left {
-    width: 200px;
-    min-width: 160px;
+    width: 180px;
+    min-width: 140px;
   }
   
   .record-textarea {
-    height: 240px; /* 減少高度 */
-    min-width: 280px;
+    height: 200px;
+    min-width: 240px;
   }
   
   .mood-slider-block {
-    width: 200px;
+    width: 180px;
   }
   
   .mood-slider {
-    width: 160px;
+    width: 140px;
   }
 }
 
-/* 明日期望頁面橫向優化 */
+/* 手機版記錄頁面優化 */
+@media screen and (max-width: 767px) {
+  .record-content-row {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .record-left {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .record-textarea {
+    width: 100%;
+    max-width: 300px;
+    height: 150px;
+    min-width: unset;
+  }
+  
+  .mood-slider-block {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .mood-slider {
+    width: 100%;
+    max-width: 250px;
+  }
+}
+
+/* 明日期望頁面響應式優化 */
 @media screen and (orientation: landscape) {
   .card-list {
-    margin: 80px auto 0 auto; /* 減少上邊距 */
-    height: 320px; /* 減少高度 */
+    margin: 60px auto 0 auto;
+    height: 280px;
+    position: relative;
   }
   
   .card-item {
-    width: 320px; /* 縮小卡片 */
-    height: 200px;
+    width: 280px;
+    height: 180px;
+    position: absolute;
   }
   
   .card-item[data-card="1"] {
-    left: -140px;
-    top: 20px;
+    left: -120px;
+    top: 15px;
   }
   
   .card-item[data-card="2"] {
@@ -130,65 +298,161 @@
   }
   
   .card-item[data-card="3"] {
-    left: 140px;
-    top: -40px;
+    left: 120px;
+    top: -35px;
   }
   
   .sticker-container {
-    top: 180px;
-    height: 240px;
+    top: 160px;
+    height: 200px;
   }
   
   .sticker-area {
-    grid-template-columns: repeat(3, 50px);
-    grid-template-rows: repeat(2, 50px);
-    gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(3, 45px);
+    grid-template-rows: repeat(2, 45px);
+    gap: 10px;
+    justify-content: center;
   }
   
   .sticker {
-    width: 50px;
-    height: 50px;
-  }
-}
-/* 按鈕和導航橫向優化 */
-@media screen and (orientation: landscape) {
-  .menu-btns {
-    gap: 20px; /* 減少按鈕間距 */
-    margin-top: 20px;
-  }
-  
-  .menu-btn {
-    padding: 14px 0px; /* 減少按鈕內邊距 */
-    width: 200px; /* 縮小按鈕寬度 */
-    font-size: 22px; /* 減少字體大小 */
-  }
-  
-  .arrow-btn, .arrow-btn2, .arrow-btn3 {
-    bottom: 5%; /* 調整箭頭位置 */
-    font-size: 24px; /* 縮小箭頭 */
-  }
-  
-  .back-btn, .back-btn2, .back-btn3 {
-    font-size: 14px; /* 縮小返回按鈕 */
+    width: 45px;
+    height: 45px;
   }
 }
 
-/* Logo區塊橫向優化 */
+/* 手機版明日期望頁面優化 */
+@media screen and (max-width: 767px) {
+  .card-list {
+    margin: 40px auto 0 auto;
+    height: 200px;
+    position: relative;
+  }
+  
+  .card-item {
+    width: 200px;
+    height: 120px;
+    position: absolute;
+  }
+  
+  .card-item[data-card="1"] {
+    left: -80px;
+    top: 10px;
+  }
+  
+  .card-item[data-card="2"] {
+    left: 0px;
+    top: 0px;
+  }
+  
+  .card-item[data-card="3"] {
+    left: 80px;
+    top: -25px;
+  }
+  
+  .sticker-container {
+    top: 120px;
+    height: 160px;
+  }
+  
+  .sticker-area {
+    display: grid;
+    grid-template-columns: repeat(3, 35px);
+    grid-template-rows: repeat(2, 35px);
+    gap: 8px;
+    justify-content: center;
+  }
+  
+  .sticker {
+    width: 35px;
+    height: 35px;
+  }
+}
+/* 按鈕和導航響應式優化 */
+@media screen and (orientation: landscape) {
+  .menu-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+    align-items: center;
+  }
+  
+  .menu-btn {
+    padding: 12px 0px;
+    width: 180px;
+    font-size: 20px;
+  }
+  
+  .arrow-btn, .arrow-btn2, .arrow-btn3 {
+    bottom: 4%;
+    font-size: 20px;
+  }
+  
+  .back-btn, .back-btn2, .back-btn3 {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+}
+
+/* 手機版按鈕優化 */
+@media screen and (max-width: 767px) {
+  .menu-btns {
+    gap: 12px;
+    margin-top: 12px;
+  }
+  
+  .menu-btn {
+    padding: 10px 0px;
+    width: 160px;
+    font-size: 18px;
+  }
+  
+  .arrow-btn, .arrow-btn2, .arrow-btn3 {
+    bottom: 3%;
+    font-size: 18px;
+  }
+  
+  .back-btn, .back-btn2, .back-btn3 {
+    font-size: 10px;
+    padding: 6px 12px;
+  }
+}
+
+/* Logo區塊響應式優化 */
 @media screen and (orientation: landscape) {
   .logo-block {
-    bottom: 1vh; /* 調整位置 */
+    bottom: 1vh;
     right: 1vh;
+    position: fixed;
   }
   
   .logo-block .feeling-title {
-    font-size: clamp(14px, 2.5vw, 32px);
+    font-size: clamp(12px, 2.2vw, 28px);
   }
   
   .logo-block .subtitle {
-    font-size: clamp(8px, 1vw, 16px);
+    font-size: clamp(7px, 0.9vw, 14px);
   }
 }
-/* 防止橫向滾動和內容溢出 */
+
+/* 手機版Logo優化 */
+@media screen and (max-width: 767px) {
+  .logo-block {
+    bottom: 0.5vh;
+    right: 0.5vh;
+    transform: scale(0.8);
+  }
+  
+  .logo-block .feeling-title {
+    font-size: clamp(10px, 2vw, 24px);
+  }
+  
+  .logo-block .subtitle {
+    font-size: clamp(6px, 0.8vw, 12px);
+  }
+}
+/* 防止溢出和內容超出 */
 @media screen and (orientation: landscape) {
   * {
     box-sizing: border-box;
@@ -206,70 +470,145 @@
     overflow: hidden;
   }
   
-  /* 調整標題和回到按鈕的間距 */
+  /* 調整標題和返回按鈕的間距 */
   .title_and_back-btn {
-    padding: 10px 20px; /* 減少內邊距 */
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
   
   .mood-header, .record-title, .tomorrow-title, .diary-title {
-    font-size: 18px; /* 縮小標題 */
-    padding: 12px 32px;
+    font-size: 16px;
+    padding: 10px 24px;
   }
 }
 
-/* 心情日記頁面橫向優化 */
+/* 手機版容器優化 */
+@media screen and (max-width: 767px) {
+  .mood-container, .record-container, .tomorrow-container, .date-container {
+    max-width: 100vw;
+    max-height: 100vh;
+    padding: 10px;
+  }
+  
+  .title_and_back-btn {
+    padding: 6px 12px;
+  }
+  
+  .mood-header, .record-title, .tomorrow-title, .diary-title {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+/* 心情日記頁面響應式優化 */
 @media screen and (orientation: landscape) {
   .year-item {
-    width: 100px;
-    height: 100px;
-    font-size: 32px;
+    width: 85px;
+    height: 85px;
+    font-size: 28px;
   }
   
   .year-item.current {
-    width: 140px;
-    height: 140px;
-    font-size: 48px;
+    width: 120px;
+    height: 120px;
+    font-size: 42px;
   }
   
   .month-item {
-    width: 80px;
-    height: 80px;
-    font-size: 24px;
+    width: 70px;
+    height: 70px;
+    font-size: 20px;
   }
   
   .date-item {
-    width: 48px;
-    height: 48px;
-    font-size: 18px;
+    width: 42px;
+    height: 42px;
+    font-size: 16px;
+  }
+}
+
+/* 手機版心情日記頁面優化 */
+@media screen and (max-width: 767px) {
+  .year-item {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+  }
+  
+  .year-item.current {
+    width: 80px;
+    height: 80px;
+    font-size: 28px;
+  }
+  
+  .month-item {
+    width: 50px;
+    height: 50px;
+    font-size: 16px;
+  }
+  
+  .date-item {
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
   }
 }
 /* 觸控友好的互動元素 */
 @media screen and (orientation: landscape) {
   /* 確保觸控目標足夠大 */
   .mood-item, .card-item, .weather-btn, .sticker {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 40px;
+    min-height: 40px;
   }
   
   /* 調整滑桿的觸控區域 */
   .mood-slider {
-    height: 8px;
+    height: 7px;
   }
   
   .mood-slider::-webkit-slider-thumb {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
   }
   
   /* 文字輸入區域優化 */
   .record-textarea {
-    font-size: 16px; /* 防止iOS縮放 */
-    padding: 20px;
+    font-size: 14px;
+    padding: 16px;
   }
   
   .card-textarea-brown, .card-textarea-black, .card-textarea-white {
-    font-size: 16px;
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* 手機版觸控優化 */
+@media screen and (max-width: 767px) {
+  .mood-item, .card-item, .weather-btn, .sticker {
+    min-width: 35px;
+    min-height: 35px;
+  }
+  
+  .mood-slider {
+    height: 6px;
+  }
+  
+  .mood-slider::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .record-textarea {
+    font-size: 12px;
     padding: 12px;
+  }
+  
+  .card-textarea-brown, .card-textarea-black, .card-textarea-white {
+    font-size: 12px;
+    padding: 8px;
   }
 }
 .cover {
