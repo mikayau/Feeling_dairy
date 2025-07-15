@@ -22,7 +22,7 @@
 /* 手機橫向模式 */
 @media screen and (max-width: 768px) and (orientation: landscape) {
   body {
-    zoom: 0.75; /* 橫向時稍微縮小 */
+    zoom: 0.1; /* 橫向時稍微縮小 */
   }
   
   /* 調整容器高度 */
@@ -47,13 +47,13 @@
   body {
     zoom: 0.85;
   }
-  
   .feeling-title {
-    font-size: 140px !important;
+    margin-top: 20px;
+
   }
-  
   .subtitle {
-    font-size: 40px !important;
+    margin-top: 0px;
+
   }
 }
 /* 心情選擇頁面橫向優化 */
