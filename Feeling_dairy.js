@@ -68,7 +68,7 @@ document
     // 新增這行，送出前先 alert
     // alert(`送出資料：user=testUser, mood=${selectedMood}, date=${dateStr}`);
 
-    fetch("http://localhost:3000/api/submit-mood", {
+    fetch("https://feeling-dairy.onrender.com/api/submit-mood", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -198,7 +198,7 @@ document
     }
 
     //傳送到雲端
-    fetch("http://localhost:3000/api/saveRecord", {
+    fetch("https://feeling-dairy.onrender.com/api/saveRecord", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
@@ -366,7 +366,7 @@ document.getElementById('sticker-btn').addEventListener('click', function () {
   };
 
   // 送到後端
-  fetch('http://localhost:3000/api/Tomorrow', {
+  fetch('https://feeling-dairy.onrender.com/api/Tomorrow', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -542,7 +542,7 @@ function showDateSelector(year, month) {
   const days = new Date(year, month, 0).getDate();
 
   // 取得該月所有心情紀錄
-  fetch(`http://localhost:3000/api/month-moods?year=${year}&month=${String(month).padStart(2, '0')}`)
+  fetch(`https://feeling-dairy.onrender.com/api/month-moods?year=${year}&month=${String(month).padStart(2, '0')}`)
     .then(res => res.json())
     .then(moodData => {
         for (let d = 1; d <= days; d++) {
@@ -578,7 +578,7 @@ function showDateSelector(year, month) {
           div.onclick = () => {
             const dateStr = `${String(d).padStart(2, '0')}-${String(month).padStart(2, '0')}-${year}`;
             // 發送請求取得該天記錄
-            fetch(`http://localhost:3000/api/getRecord?date=${dateStr}&user=${USER_ID}`)
+            fetch(`https://feeling-dairy.onrender.com/api/getRecord?date=${dateStr}&user=${USER_ID}`)
               .then(res => res.json())
               .then(record => {
                 // 顯示記錄內容
@@ -736,7 +736,7 @@ function updateDateSelectorColors(year, month) {
   return new Promise((resolve, reject) => {
     // 重新獲取該月的心情數據並更新背景
     const monthStr = String(month).padStart(2, '0');
-    fetch(`http://localhost:3000/api/month-moods?year=${year}&month=${monthStr}`)
+    fetch(`https://feeling-dairy.onrender.com/api/month-moods?year=${year}&month=${monthStr}`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -792,7 +792,7 @@ function updateDateSelectorColors(year, month) {
           item.onclick = () => {
             const dateStr = `${String(day).padStart(2, '0')}-${String(month).padStart(2, '0')}-${year}`;
             // 發送請求取得該天記錄
-            fetch(`http://localhost:3000/api/getRecord?date=${dateStr}&user=${USER_ID}`)
+            fetch(`https://feeling-dairy.onrender.com/api/getRecord?date=${dateStr}&user=${USER_ID}`)
               .then(res => res.json())
               .then(record => {
                 // 顯示記錄內容
@@ -935,7 +935,7 @@ function showMoodSelect(record, dateStr) {
       console.log('recordData to send:', recordData);
       
       // 發送心情資料到 Mood API
-      fetch('http://localhost:3000/api/submit-mood', {
+      fetch('https://feeling-dairy.onrender.com/api/submit-mood', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(moodData),
@@ -950,7 +950,7 @@ function showMoodSelect(record, dateStr) {
         console.log('mood-select2 - mood saved:', moodResult);
         
         // 同時更新 Record
-        return fetch('http://localhost:3000/api/saveRecord', {
+        return fetch('https://feeling-dairy.onrender.com/api/saveRecord', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(recordData),
@@ -1044,7 +1044,7 @@ function showTodayRecord2(record, dateStr) {
   // 如果沒有 record 或 record 不完整，重新獲取數據
   if (!record || (!record.moodLevel && !record.content && !record.weather)) {
     console.log('showTodayRecord2 - incomplete record, fetching from API');
-    fetch(`http://localhost:3000/api/getRecord?date=${dateStr}&user=${USER_ID}`)
+    fetch(`https://feeling-dairy.onrender.com/api/getRecord?date=${dateStr}&user=${USER_ID}`)
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -1213,7 +1213,7 @@ function setupRecord2Buttons(record, dateStr) {
         time: new Date().toISOString()
       };
 
-      fetch('http://localhost:3000/api/submit-mood', {
+      fetch('https://feeling-dairy.onrender.com/api/submit-mood', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(moodData),
@@ -1228,7 +1228,7 @@ function setupRecord2Buttons(record, dateStr) {
         console.log('record2 - mood saved:', moodResult);
         
         // 然後更新 Record 模型
-        return fetch('http://localhost:3000/api/saveRecord', {
+        return fetch('https://feeling-dairy.onrender.com/api/saveRecord', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
@@ -1450,7 +1450,7 @@ function showTomorrowBlock2(record, dateStr) {
 // 獲取並顯示已保存的明天期望數據
 async function loadTomorrowData(dateStr) {
   try {
-    const response = await fetch(`http://localhost:3000/api/getTomorrow?date=${dateStr}&user=${USER_ID}`);
+    const response = await fetch(`https://feeling-dairy.onrender.com/api/getTomorrow?date=${dateStr}&user=${USER_ID}`);
     const tomorrowData = await response.json();
     
     console.log('loadTomorrowData - tomorrowData:', tomorrowData);
@@ -1742,7 +1742,7 @@ async function saveTomorrowData(dateStr) {
     if (stickerTypes.length === 0) {
       // 嘗試從原始數據中獲取貼紙資訊
       try {
-        const response = await fetch(`http://localhost:3000/api/getTomorrow?date=${dateStr}&user=${USER_ID}`);
+        const response = await fetch(`https://feeling-dairy.onrender.com/api/getTomorrow?date=${dateStr}&user=${USER_ID}`);
         const originalData = await response.json();
         if (originalData && originalData.stickerType) {
           finalStickerType = originalData.stickerType;
@@ -1754,7 +1754,7 @@ async function saveTomorrowData(dateStr) {
     }
 
     // 儲存明日期望資料
-    const response = await fetch('http://localhost:3000/api/Tomorrow', {
+    const response = await fetch('https://feeling-dairy.onrender.com/api/Tomorrow', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
