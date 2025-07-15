@@ -471,7 +471,7 @@ body {
 .arrow-btn3 {
   position: absolute;
   /* 絕對定位 */
-  bottom: -10%;
+  bottom: 10px;
   /* 靠底 */
   left: 50%;
   /* 靠左 */
