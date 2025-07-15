@@ -13,6 +13,8 @@ app.use(express.static('.')); /*提供靜態文件服務*/
 //連接到MongoDB數據庫
 //mongoose.connect('mongodb://localhost:27017/feeling')/*連接到MongoDB數據庫feeling*/
 
+console.log("MONGODB_URI:", process.env.MONGODB_URI); // 部署到 Render 后会打日志
+
 // 新寫法（推薦）：
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true, 
