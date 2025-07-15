@@ -11,7 +11,15 @@ app.use(bodyParser.json());
 app.use(express.static('.')); /*提供靜態文件服務*/ 
 
 //連接到MongoDB數據庫
-mongoose.connect('mongodb://localhost:27017/feeling')/*連接到MongoDB數據庫feeling*/
+//mongoose.connect('mongodb://localhost:27017/feeling')/*連接到MongoDB數據庫feeling*/
+
+// 新寫法（推薦）：
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true, 
+  useUnifiedTopology: true
+})
+.then(() => console.log("成功連接到Atlas雲端MongoDB！"))
+.catch((err) => console.error("連線失敗：", err));
 
 //定義心情模型,定義資料結構
 /*心情模型包含用戶名、心情和時間戳*/
